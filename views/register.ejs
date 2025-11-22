@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - TechShield Pro</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+    <!-- Registration Section -->
+    <section class="register-section">
+        <div class="register-container">
+            <div class="register-header">
+                <h2>Create Account</h2>
+                <p class="mb-0">Join TechShield Pro today</p>
+            </div>
+            <div class="register-body">
+                <form id="register-form" class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="firstName" placeholder="First name" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid first name.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="lastName" placeholder="Last name" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid last name.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                            <div class="invalid-feedback">
+                                Please provide a valid email address.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-phone"></i>
+                            </span>
+                            <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number" required>
+                            <div class="invalid-feedback">
+                                Please provide a valid phone number.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="password" placeholder="Create a password" required minlength="8">
+                            <button class="input-group-text" type="button" id="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength" id="password-strength">
+                            <div class="password-strength-bar"></div>
+                        </div>
+                        <div class="password-requirements" id="password-requirements">
+                            <div class="requirement invalid" id="length-req">
+                                <i class="fas fa-circle"></i>
+                                <span>At least 8 characters</span>
+                            </div>
+                        </div>
+                        <div class="invalid-feedback" id="password-feedback">
+                            Password must be at least 8 characters with uppercase, lowercase, and number.
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
+                            <button class="input-group-text" type="button" id="toggle-confirm-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="invalid-feedback" id="confirm-password-feedback">
+                            Passwords do not match.
+                        </div>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                        <label class="form-check-label" for="agreeTerms">
+                            I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                        </label>
+                        <div class="invalid-feedback">
+                            You must agree before submitting.
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="register-btn">Create Account</button>
+                </form>
+                
+                <div class="register-footer">
+                    <p>Already have an account? <a href="/login">Sign in here</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Registration form functionality
+        const registerForm = document.getElementById('register-form');
+        const togglePassword = document.getElementById('toggle-password');
+        const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordStrength = document.getElementById('password-strength');
+        const toastContainer = document.getElementById('toast-container');
+        
+        // Password visibility toggles
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+        
+        toggleConfirmPassword.addEventListener('click', function() {
+            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordInput.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+        
+        // Password strength checker
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            checkPasswordStrength(password);
+            validatePasswordMatch();
+        });
+        
+        // Confirm password validation
+        confirmPasswordInput.addEventListener('input', validatePasswordMatch);
+        
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            const requirements = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password)
+            };
+            
+            // Update requirement indicators
+            document.getElementById('length-req').className = requirements.length ? 'requirement valid' : 'requirement invalid';
+            document.getElementById('uppercase-req').className = requirements.uppercase ? 'requirement valid' : 'requirement invalid';
+            document.getElementById('lowercase-req').className = requirements.lowercase ? 'requirement valid' : 'requirement invalid';
+            document.getElementById('number-req').className = requirements.number ? 'requirement valid' : 'requirement invalid';
+            
+            // Calculate strength score
+            if (requirements.length) strength += 25;
+            if (requirements.uppercase) strength += 25;
+            if (requirements.lowercase) strength += 25;
+            if (requirements.number) strength += 25;
+            
+            // Update strength indicator
+            passwordStrength.className = 'password-strength';
+            if (strength <= 25) {
+                passwordStrength.classList.add('weak');
+            } else if (strength <= 50) {
+                passwordStrength.classList.add('fair');
+            } else if (strength <= 75) {
+                passwordStrength.classList.add('good');
+            } else {
+                passwordStrength.classList.add('strong');
+            }
+            
+            // Validate password field
+            const isValid = requirements.length && requirements.uppercase && 
+                           requirements.lowercase && requirements.number;
+            
+            if (password && !isValid) {
+                passwordInput.classList.add('is-invalid');
+                passwordInput.classList.remove('is-valid');
+            } else if (password && isValid) {
+                passwordInput.classList.add('is-valid');
+                passwordInput.classList.remove('is-invalid');
+            } else {
+                passwordInput.classList.remove('is-valid', 'is-invalid');
+            }
+        }
+        
+        function validatePasswordMatch() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                confirmPasswordInput.classList.add('is-invalid');
+                confirmPasswordInput.classList.remove('is-valid');
+            } else if (confirmPassword && password === confirmPassword) {
+                confirmPasswordInput.classList.add('is-valid');
+                confirmPasswordInput.classList.remove('is-invalid');
+            } else {
+                confirmPasswordInput.classList.remove('is-valid', 'is-invalid');
+            }
+        }
+        
+        // Form submission
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!registerForm.checkValidity()) {
+                e.stopPropagation();
+                registerForm.classList.add('was-validated');
+                showToast('Error', 'Please fill in all required fields correctly.', 'error');
+                return;
+            }
+            
+            // Additional validation for password match
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                confirmPasswordInput.classList.add('is-invalid');
+                showToast('Error', 'Passwords do not match.', 'error');
+                return;
+            }
+            
+            // Additional validation for password strength
+            const password = passwordInput.value;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            
+            if (password.length < 8 || !hasUpperCase || !hasLowerCase || !hasNumber) {
+                passwordInput.classList.add('is-invalid');
+                showToast('Error', 'Password does not meet requirements.', 'error');
+                return;
+            }
+            
+            // If all validations pass
+            registerForm.classList.add('was-validated');
+            
+            // Simulate registration process
+            showToast('Success', 'Account created successfully! Redirecting to login...', 'success');
+            
+            // In a real application, you would make an API call here
+            // For demo purposes, we'll redirect after a short delay
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        });
+        
+        // Real-time validation for form fields
+        const formFields = registerForm.querySelectorAll('.form-control');
+        formFields.forEach(field => {
+            field.addEventListener('blur', function() {
+                if (this.value) {
+                    if (this.checkValidity()) {
+                        this.classList.add('is-valid');
+                        this.classList.remove('is-invalid');
+                    } else {
+                        this.classList.add('is-invalid');
+                        this.classList.remove('is-valid');
+                    }
+                } else {
+                    this.classList.remove('is-valid', 'is-invalid');
+                }
+            });
+        });
+        
+        // Phone number formatting
+        const phoneInput = document.getElementById('phone');
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length > 0) {
+                value = '(' + value;
+                
+                if (value.length > 4) {
+                    value = value.slice(0, 4) + ') ' + value.slice(4);
+                }
+                
+                if (value.length > 9) {
+                    value = value.slice(0, 9) + '-' + value.slice(9);
+                }
+                
+                if (value.length > 14) {
+                    value = value.slice(0, 14);
+                }
+            }
+            
+            e.target.value = value;
+        });
+        
+        // Show toast notification
+        function showToast(title, message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="fas ${type === 'success' ? 'fa-check' : 'fa-exclamation-triangle'}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="close-toast">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                hideToast(toast);
+            }, 5000);
+            
+            // Close button
+            toast.querySelector('.close-toast').addEventListener('click', () => {
+                hideToast(toast);
+            });
+        }
+        
+        // Hide toast
+        function hideToast(toast) {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }
+    </script>
+</body>
+</html>

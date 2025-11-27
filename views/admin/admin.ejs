@@ -1,0 +1,89 @@
+<%- include('../layout/admin_header') %>
+   
+ <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Admin Dashboard</h1>
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <span>name</span>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--secondary);">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>142</h3>
+                    <p>Total Products</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--success);">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>8</h3>
+                    <p>Categories</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--warning);">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>324</h3>
+                    <p>Orders This Month</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--danger);">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>1,248</h3>
+                    <p>Registered Users</p>
+                </div>
+            </div>
+        </div>
+
+          <% if (failureMessages && failureMessages.length> 0) { %>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <%= failureMessages[0] %>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                            </div>
+                            <% } %>
+
+                                <% if (successMeg && successMeg.length> 0) { %>
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                        <%= successMeg[0] %>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <% } %>
+
+                                        <!-- Validation errors -->
+                                        <% if (errors && errors.length> 0) { %>
+                                            <ul style="color:red;">
+                                                <% errors.forEach(function(error) { %>
+                                                    <li>
+                                                        <%= error.msg %>
+                                                    </li>
+                                                    <% }); %>
+                                            </ul>
+                                              <% } %>
+       
+
+           
+           
+        
+
+      
+
+   <%- include('../layout/admin_footer') %>

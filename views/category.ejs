@@ -16,8 +16,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h1>Phone Cases</h1>
-                    <p class="text-muted">Protect your device with our premium collection of phone cases</p>
+                    <h1>
+                        <%= categoryName.toUpperCase() %>
+                    </h1>
+                    <p class="text-muted">Our products are the best in Quality and durations </p>
                 </div>
             </div>
         </div>
@@ -30,475 +32,279 @@
             <!-- Product 1 -->
             <div class="col-lg-3 col-md-6">
                 <div class="product-card">
-                    <div class="product-img position-relative">
-                        <span class="product-badge">Bestseller</span>
-                        <img src="https://images.unsplash.com/photo-1605236453806-6ff36851218e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                            alt="Rugged Protective Case" class="img-fluid">
-                    </div>
-                    <div class="p-3">
-                        <div class="product-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="text-muted ms-1">(342)</span>
-                        </div>
-                        <h5 class="product-title">Rugged Protective Case</h5>
-                        <p class="text-muted small mb-2">Military-grade protection, raised bezels</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="product-price">$18.99</div>
-                            <button class="btn btn-primary btn-sm add-to-cart" data-id="1"
-                                data-name="Rugged Protective Case" data-price="18.99"
-                                data-image="https://images.unsplash.com/photo-1605236453806-6ff36851218e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80">Add
-                                to Cart</button>
-                        </div>
-                    </div>
+                    <% if (products.length> 0) { %>
+                        <% products.forEach(product=> { %>
+                            <div class="product-img position-relative">
+                                <span class="product-badge">Bestseller</span>
+                                <img src="<%= product.image %>" alt="Rugged Protective Case" class="img-fluid">
+                            </div>
+                            <div class="p-3">
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span class="text-muted ms-1">(342)</span>
+                                </div>
+                                <h5 class="product-title">
+                                    <%= product.productName %>
+                                </h5>
+                                <p class="text-muted small mb-2">
+                                    <%= product.desc %>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">(&#x20A6;)<%= product.price %>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm add-to-cart" data-id="1"
+                                        data-name="Rugged Protective Case" data-price="18.99"
+                                        data-image="https://images.unsplash.com/photo-1605236453806-6ff36851218e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80">Add
+                                        to Cart</button>
+                                </div>
+                                <% }) %>
+                                    <% } else { %>
+                                        <h3>No products available in this category yet.</h3>
+                                    <% } %> %>
+                            </div>
                 </div>
             </div>
 
-            <!-- Product 2 -->
-            <div class="col-lg-3 col-md-6">
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="https://images.unsplash.com/photo-1601593346926-2af4e1f6e5de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                            alt="Clear Transparent Case" class="img-fluid">
+
+            <!-- Pagination -->
+            <nav aria-label="Product pagination" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Cart Sidebar -->
+        <div class="cart-sidebar" id="cart-sidebar">
+            <div class="cart-header">
+                <h5 class="cart-title">Your Cart</h5>
+                <button class="close-cart" id="close-cart">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items will be dynamically added here -->
+                <div class="empty-cart">
+                    <div class="empty-cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
                     </div>
-                    <div class="p-3">
-                        <div class="product-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="text-muted ms-1">(215)</span>
-                        </div>
-                        <h5 class="product-title">Clear Transparent Case</h5>
-                        <p class="text-muted small mb-2">Show off your phone's design with protection</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="product-price">$12.99</div>
-                            <button class="btn btn-primary btn-sm add-to-cart" data-id="2"
-                                data-name="Clear Transparent Case" data-price="12.99"
-                                data-image="https://images.unsplash.com/photo-1601593346926-2af4e1f6e5de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80">Add
-                                to Cart</button>
-                        </div>
-                    </div>
+                    <h5>Your cart is empty</h5>
+                    <p class="text-muted">Add some products to your cart</p>
                 </div>
             </div>
-
-            <!-- Product 3 -->
-            <div class="col-lg-3 col-md-6">
-                <div class="product-card">
-                    <div class="product-img position-relative">
-                        <span class="product-badge">New</span>
-                        <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                            alt="Leather Wallet Case" class="img-fluid">
-                    </div>
-                    <div class="p-3">
-                        <div class="product-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <span class="text-muted ms-1">(87)</span>
-                        </div>
-                        <h5 class="product-title">Leather Wallet Case</h5>
-                        <p class="text-muted small mb-2">Premium leather with card slots</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="product-price">$24.99 <span class="product-old-price">$29.99</span></div>
-                            <button class="btn btn-primary btn-sm add-to-cart" data-id="3"
-                                data-name="Leather Wallet Case" data-price="24.99"
-                                data-image="https://images.unsplash.com/photo-1556656793-08538906a9f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80">Add
-                                to Cart</button>
-                        </div>
-                    </div>
+            <div class="cart-summary" id="cart-summary" style="display: none;">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cart-total">$0.00</span>
                 </div>
-            </div>
-
-            <!-- Product 4 -->
-            <div class="col-lg-3 col-md-6">
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="https://images.unsplash.com/photo-1601593346926-2af4e1f6e5de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                            alt="Slim Fit Case" class="img-fluid">
-                    </div>
-                    <div class="p-3">
-                        <div class="product-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="text-muted ms-1">(189)</span>
-                        </div>
-                        <h5 class="product-title">Slim Fit Case</h5>
-                        <p class="text-muted small mb-2">Ultra-thin design with protection</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="product-price">$14.99</div>
-                            <button class="btn btn-primary btn-sm add-to-cart" data-id="4" data-name="Slim Fit Case"
-                                data-price="14.99"
-                                data-image="https://images.unsplash.com/photo-1601593346926-2af4e1f6e5de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80">Add
-                                to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 5 -->
-            <div class="col-lg-3 col-md-6">
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="https://images.unsplash.com/photo-1605236453806-6ff36851218e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                            alt="Shockproof Armor Case" class="img-fluid">
-                    </div>
-                    <div class="p-3">
-                        <div class="product-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="text-muted ms-1">(276)</span>
-                        </div>
-                        <h5 class="product-title">Shockproof Armor Case</h5>
-                        <p class="text-muted small mb-2">Heavy-duty protection for extreme conditions</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="product-price">$22.99</div>
-                            <button class="btn btn-primary btn-sm add-to-cart" data-id="5"
-                                data-name="Shockproof Armor Case" data-price="22.99"
-                                data-image="https://images.unsplash.com/photo-1605236453806-6ff36851218e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80">Add
-                                to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 6 -->
-            <div class="col-lg-3 col-md-6">
-                <div class="product-card">
-                    <div class="product-img position-relative">
-                        <span class="product-badge">Sale</span>
-                        <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                            alt="Designer Pattern Case" class="img-fluid">
-                    </div>
-                    <div class="p-3">
-                        <div class="product-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <span class="text-muted ms-1">(143)</span>
-                        </div>
-                        <h5 class="product-title">Designer Pattern Case</h5>
-                        <p class="text-muted small mb-2">Unique artistic designs</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="product-price">$16.99 <span class="product-old-price">$21.99</span></div>
-                            <button class="btn btn-primary btn-sm add-to-cart" data-id="6"
-                                data-name="Designer Pattern Case" data-price="16.99"
-                                data-image="https://images.unsplash.com/photo-1556656793-08538906a9f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80">Add
-                                to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 7 -->
-            <div class="col-lg-3 col-md-6">
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="https://images.unsplash.com/photo-1601593346926-2af4e1f6e5de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                            alt="Wireless Charging Case" class="img-fluid">
-                    </div>
-                    <div class="p-3">
-                        <div class="product-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="text-muted ms-1">(198)</span>
-                        </div>
-                        <h5 class="product-title">Wireless Charging Case</h5>
-                        <p class="text-muted small mb-2">Compatible with wireless charging</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="product-price">$19.99</div>
-                            <button class="btn btn-primary btn-sm add-to-cart" data-id="7"
-                                data-name="Wireless Charging Case" data-price="19.99"
-                                data-image="https://images.unsplash.com/photo-1601593346926-2af4e1f6e5de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80">Add
-                                to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 8 -->
-            <div class="col-lg-3 col-md-6">
-                <div class="product-card">
-                    <div class="product-img position-relative">
-                        <span class="product-badge">Limited</span>
-                        <img src="https://images.unsplash.com/photo-1605236453806-6ff36851218e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                            alt="Carbon Fiber Case" class="img-fluid">
-                    </div>
-                    <div class="p-3">
-                        <div class="product-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="text-muted ms-1">(124)</span>
-                        </div>
-                        <h5 class="product-title">Carbon Fiber Case</h5>
-                        <p class="text-muted small mb-2">Lightweight yet extremely durable</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="product-price">$29.99</div>
-                            <button class="btn btn-primary btn-sm add-to-cart" data-id="8"
-                                data-name="Carbon Fiber Case" data-price="29.99"
-                                data-image="https://images.unsplash.com/photo-1605236453806-6ff36851218e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80">Add
-                                to Cart</button>
-                        </div>
-                    </div>
-                </div>
+                <button class="btn btn-primary checkout-btn">Proceed to Checkout</button>
             </div>
         </div>
 
-        <!-- Pagination -->
-        <nav aria-label="Product pagination" class="mt-5">
-            <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+        <!-- Overlay -->
+        <div class="overlay" id="overlay"></div>
 
-    <!-- Cart Sidebar -->
-    <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-            <h5 class="cart-title">Your Cart</h5>
-            <button class="close-cart" id="close-cart">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="cart-items" id="cart-items">
-            <!-- Cart items will be dynamically added here -->
-            <div class="empty-cart">
-                <div class="empty-cart-icon">
-                    <i class="fas fa-shopping-cart"></i>
-                </div>
-                <h5>Your cart is empty</h5>
-                <p class="text-muted">Add some products to your cart</p>
-            </div>
-        </div>
-        <div class="cart-summary" id="cart-summary" style="display: none;">
-            <div class="cart-total">
-                <span>Total:</span>
-                <span id="cart-total">$0.00</span>
-            </div>
-            <button class="btn btn-primary checkout-btn">Proceed to Checkout</button>
-        </div>
-    </div>
+        <!-- Toast Container -->
+        <div class="toast-container" id="toast-container"></div>
 
-    <!-- Overlay -->
-    <div class="overlay" id="overlay"></div>
-
-    <!-- Toast Container -->
-    <div class="toast-container" id="toast-container"></div>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4 mb-lg-0">
-                    <a href="#" class="footer-logo">
-                        <i class="fas fa-mobile-alt me-2"></i>TechShield Pro
-                    </a>
-                    <p class="mb-4">Your trusted source for premium phone accessories and replacement parts. Quality
-                        products, fast shipping, and excellent customer service.</p>
-                    <div class="social-icons">
-                        <a href="#" class="social-icon">
-                            <i class="fab fa-facebook-f"></i>
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 mb-4 mb-lg-0">
+                        <a href="#" class="footer-logo">
+                            <i class="fas fa-mobile-alt me-2"></i>TechShield Pro
                         </a>
-                        <a href="#" class="social-icon">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="social-icon">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="social-icon">
-                            <i class="fab fa-youtube"></i>
-                        </a>
+                        <p class="mb-4">Your trusted source for premium phone accessories and replacement parts. Quality
+                            products, fast shipping, and excellent customer service.</p>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                        <div class="footer-links">
+                            <h5>Shop</h5>
+                            <ul>
+                                <li><a href="#">Phone Cases</a></li>
+                                <li><a href="#">Screen Protectors</a></li>
+                                <li><a href="#">Chargers</a></li>
+                                <li><a href="#">Cables</a></li>
+                                <li><a href="#">Replacement Parts</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                        <div class="footer-links">
+                            <h5>Support</h5>
+                            <ul>
+                                <li><a href="#">Contact Us</a></li>
+                                <li><a href="#">Shipping Policy</a></li>
+                                <li><a href="#">Returns & Refunds</a></li>
+                                <li><a href="#">FAQ</a></li>
+                                <li><a href="#">Size Guide</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4">
+                        <div class="footer-links">
+                            <h5>Company</h5>
+                            <ul>
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Careers</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Terms of Service</a></li>
+                                <li><a href="#">Blog</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="footer-links">
+                            <h5>Contact</h5>
+                            <ul>
+                                <li><a href="mailto:info@techshieldpro.com">info@techshieldpro.com</a></li>
+                                <li><a href="tel:+18005551234">+1 (800) 555-1234</a></li>
+                                <li>123 Tech Street<br>San Francisco, CA 94107</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                    <div class="footer-links">
-                        <h5>Shop</h5>
-                        <ul>
-                            <li><a href="#">Phone Cases</a></li>
-                            <li><a href="#">Screen Protectors</a></li>
-                            <li><a href="#">Chargers</a></li>
-                            <li><a href="#">Cables</a></li>
-                            <li><a href="#">Replacement Parts</a></li>
-                        </ul>
+                <hr class="my-5" style="border-color: rgba(255,255,255,0.1);">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0">© 2023 TechShield Pro. All rights reserved.</p>
                     </div>
-                </div>
-                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                    <div class="footer-links">
-                        <h5>Support</h5>
-                        <ul>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Shipping Policy</a></li>
-                            <li><a href="#">Returns & Refunds</a></li>
-                            <li><a href="#">FAQ</a></li>
-                            <li><a href="#">Size Guide</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4">
-                    <div class="footer-links">
-                        <h5>Company</h5>
-                        <ul>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Careers</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms of Service</a></li>
-                            <li><a href="#">Blog</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="footer-links">
-                        <h5>Contact</h5>
-                        <ul>
-                            <li><a href="mailto:info@techshieldpro.com">info@techshieldpro.com</a></li>
-                            <li><a href="tel:+18005551234">+1 (800) 555-1234</a></li>
-                            <li>123 Tech Street<br>San Francisco, CA 94107</li>
-                        </ul>
+                    <div class="col-md-6 text-md-end">
+                        <div class="d-flex justify-content-md-end">
+                            <img src="https://www.freepnglogos.com/uploads/visa-card-logo-9.png" alt="Visa" class="me-2"
+                                height="30">
+                            <img src="https://www.freepnglogos.com/uploads/mastercard-png/mastercard-logo-png-transparent-svg-vector-bie-supply-0.png"
+                                alt="Mastercard" class="me-2" height="30">
+                            <img src="https://www.freepnglogos.com/uploads/logo-paypal-png/logo-paypal-png-paypal-logo-png-vector-download-19.png"
+                                alt="PayPal" class="me-2" height="30">
+                            <img src="https://www.freepnglogos.com/uploads/apple-pay-png/apple-pay-icon-33.png"
+                                alt="Apple Pay" height="30">
+                        </div>
                     </div>
                 </div>
             </div>
-            <hr class="my-5" style="border-color: rgba(255,255,255,0.1);">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="mb-0">© 2023 TechShield Pro. All rights reserved.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <div class="d-flex justify-content-md-end">
-                        <img src="https://www.freepnglogos.com/uploads/visa-card-logo-9.png" alt="Visa" class="me-2"
-                            height="30">
-                        <img src="https://www.freepnglogos.com/uploads/mastercard-png/mastercard-logo-png-transparent-svg-vector-bie-supply-0.png"
-                            alt="Mastercard" class="me-2" height="30">
-                        <img src="https://www.freepnglogos.com/uploads/logo-paypal-png/logo-paypal-png-paypal-logo-png-vector-download-19.png"
-                            alt="PayPal" class="me-2" height="30">
-                        <img src="https://www.freepnglogos.com/uploads/apple-pay-png/apple-pay-icon-33.png"
-                            alt="Apple Pay" height="30">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+        </footer>
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Bootstrap JS Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        // Cart functionality
-        let cart = [];
-        const cartIcon = document.getElementById('cart-icon');
-        const cartSidebar = document.getElementById('cart-sidebar');
-        const closeCart = document.getElementById('close-cart');
-        const overlay = document.getElementById('overlay');
-        const cartItems = document.getElementById('cart-items');
-        const cartSummary = document.getElementById('cart-summary');
-        const cartTotal = document.getElementById('cart-total');
-        const cartCount = document.querySelector('.cart-count');
-        const toastContainer = document.getElementById('toast-container');
+        <script>
+            // Cart functionality
+            let cart = [];
+            const cartIcon = document.getElementById('cart-icon');
+            const cartSidebar = document.getElementById('cart-sidebar');
+            const closeCart = document.getElementById('close-cart');
+            const overlay = document.getElementById('overlay');
+            const cartItems = document.getElementById('cart-items');
+            const cartSummary = document.getElementById('cart-summary');
+            const cartTotal = document.getElementById('cart-total');
+            const cartCount = document.querySelector('.cart-count');
+            const toastContainer = document.getElementById('toast-container');
 
-        // Open cart
-        cartIcon.addEventListener('click', (e) => {
-            e.preventDefault();
-            cartSidebar.classList.add('open');
-            overlay.classList.add('active');
-        });
-
-        // Close cart
-        closeCart.addEventListener('click', () => {
-            cartSidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        });
-
-        // Close cart when clicking overlay
-        overlay.addEventListener('click', () => {
-            cartSidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        });
-
-        // Add to cart functionality
-        document.querySelectorAll('.add-to-cart').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const product = {
-                    id: button.getAttribute('data-id'),
-                    name: button.getAttribute('data-name'),
-                    price: parseFloat(button.getAttribute('data-price')),
-                    image: button.getAttribute('data-image'),
-                    quantity: 1
-                };
-
-                addToCart(product);
-                showToast('Product added to cart', `${product.name} has been added to your cart.`);
+            // Open cart
+            cartIcon.addEventListener('click', (e) => {
+                e.preventDefault();
+                cartSidebar.classList.add('open');
+                overlay.classList.add('active');
             });
-        });
 
-        // Add product to cart
-        function addToCart(product) {
-            const existingItem = cart.find(item => item.id === product.id);
+            // Close cart
+            closeCart.addEventListener('click', () => {
+                cartSidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            });
 
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push(product);
-            }
+            // Close cart when clicking overlay
+            overlay.addEventListener('click', () => {
+                cartSidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            });
 
-            updateCart();
-        }
+            // Add to cart functionality
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const product = {
+                        id: button.getAttribute('data-id'),
+                        name: button.getAttribute('data-name'),
+                        price: parseFloat(button.getAttribute('data-price')),
+                        image: button.getAttribute('data-image'),
+                        quantity: 1
+                    };
 
-        // Remove item from cart
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.id !== productId);
-            updateCart();
-        }
+                    addToCart(product);
+                    showToast('Product added to cart', `${product.name} has been added to your cart.`);
+                });
+            });
 
-        // Update quantity
-        function updateQuantity(productId, newQuantity) {
-            if (newQuantity < 1) {
-                removeFromCart(productId);
-                return;
-            }
+            // Add product to cart
+            function addToCart(product) {
+                const existingItem = cart.find(item => item.id === product.id);
 
-            const item = cart.find(item => item.id === productId);
-            if (item) {
-                item.quantity = newQuantity;
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push(product);
+                }
+
                 updateCart();
             }
-        }
 
-        // Update cart UI
-        function updateCart() {
-            // Update cart count
-            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-            cartCount.textContent = totalItems;
+            // Remove item from cart
+            function removeFromCart(productId) {
+                cart = cart.filter(item => item.id !== productId);
+                updateCart();
+            }
 
-            // Update cart items
-            if (cart.length === 0) {
-                cartItems.innerHTML = `
+            // Update quantity
+            function updateQuantity(productId, newQuantity) {
+                if (newQuantity < 1) {
+                    removeFromCart(productId);
+                    return;
+                }
+
+                const item = cart.find(item => item.id === productId);
+                if (item) {
+                    item.quantity = newQuantity;
+                    updateCart();
+                }
+            }
+
+            // Update cart UI
+            function updateCart() {
+                // Update cart count
+                const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+                cartCount.textContent = totalItems;
+
+                // Update cart items
+                if (cart.length === 0) {
+                    cartItems.innerHTML = `
                     <div class="empty-cart">
                         <div class="empty-cart-icon">
                             <i class="fas fa-shopping-cart"></i>
@@ -507,18 +313,18 @@
                         <p class="text-muted">Add some products to your cart</p>
                     </div>
                 `;
-                cartSummary.style.display = 'none';
-            } else {
-                cartItems.innerHTML = '';
-                let total = 0;
+                    cartSummary.style.display = 'none';
+                } else {
+                    cartItems.innerHTML = '';
+                    let total = 0;
 
-                cart.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
-                    total += itemTotal;
+                    cart.forEach(item => {
+                        const itemTotal = item.price * item.quantity;
+                        total += itemTotal;
 
-                    const cartItem = document.createElement('div');
-                    cartItem.className = 'cart-item';
-                    cartItem.innerHTML = `
+                        const cartItem = document.createElement('div');
+                        cartItem.className = 'cart-item';
+                        cartItem.innerHTML = `
                         <img src="${item.image}" alt="${item.name}" class="cart-item-img">
                         <div class="cart-item-details">
                             <h6 class="cart-item-title">${item.name}</h6>
@@ -534,59 +340,59 @@
                         </div>
                     `;
 
-                    cartItems.appendChild(cartItem);
-                });
-
-                cartTotal.textContent = `$${total.toFixed(2)}`;
-                cartSummary.style.display = 'block';
-
-                // Add event listeners to quantity buttons
-                document.querySelectorAll('.quantity-btn.minus').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const id = e.target.getAttribute('data-id');
-                        const item = cart.find(item => item.id === id);
-                        if (item) {
-                            updateQuantity(id, item.quantity - 1);
-                        }
+                        cartItems.appendChild(cartItem);
                     });
-                });
 
-                document.querySelectorAll('.quantity-btn.plus').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const id = e.target.getAttribute('data-id');
-                        const item = cart.find(item => item.id === id);
-                        if (item) {
-                            updateQuantity(id, item.quantity + 1);
-                        }
-                    });
-                });
+                    cartTotal.textContent = `$${total.toFixed(2)}`;
+                    cartSummary.style.display = 'block';
 
-                document.querySelectorAll('.remove-item').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const id = e.target.closest('.remove-item').getAttribute('data-id');
-                        removeFromCart(id);
+                    // Add event listeners to quantity buttons
+                    document.querySelectorAll('.quantity-btn.minus').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const id = e.target.getAttribute('data-id');
+                            const item = cart.find(item => item.id === id);
+                            if (item) {
+                                updateQuantity(id, item.quantity - 1);
+                            }
+                        });
                     });
-                });
 
-                document.querySelectorAll('.quantity-input').forEach(input => {
-                    input.addEventListener('change', (e) => {
-                        const id = e.target.getAttribute('data-id');
-                        const newQuantity = parseInt(e.target.value);
-                        if (!isNaN(newQuantity) && newQuantity > 0) {
-                            updateQuantity(id, newQuantity);
-                        } else {
-                            updateCart(); // Reset to current quantity
-                        }
+                    document.querySelectorAll('.quantity-btn.plus').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const id = e.target.getAttribute('data-id');
+                            const item = cart.find(item => item.id === id);
+                            if (item) {
+                                updateQuantity(id, item.quantity + 1);
+                            }
+                        });
                     });
-                });
+
+                    document.querySelectorAll('.remove-item').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const id = e.target.closest('.remove-item').getAttribute('data-id');
+                            removeFromCart(id);
+                        });
+                    });
+
+                    document.querySelectorAll('.quantity-input').forEach(input => {
+                        input.addEventListener('change', (e) => {
+                            const id = e.target.getAttribute('data-id');
+                            const newQuantity = parseInt(e.target.value);
+                            if (!isNaN(newQuantity) && newQuantity > 0) {
+                                updateQuantity(id, newQuantity);
+                            } else {
+                                updateCart(); // Reset to current quantity
+                            }
+                        });
+                    });
+                }
             }
-        }
 
-        // Show toast notification
-        function showToast(title, message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast toast-success';
-            toast.innerHTML = `
+            // Show toast notification
+            function showToast(title, message) {
+                const toast = document.createElement('div');
+                toast.className = 'toast toast-success';
+                toast.innerHTML = `
                 <div class="toast-icon">
                     <i class="fas fa-check"></i>
                 </div>
@@ -599,36 +405,37 @@
                 </button>
             `;
 
-            toastContainer.appendChild(toast);
+                toastContainer.appendChild(toast);
 
-            // Show toast
-            setTimeout(() => {
-                toast.classList.add('show');
-            }, 100);
+                // Show toast
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 100);
 
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                hideToast(toast);
-            }, 5000);
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    hideToast(toast);
+                }, 5000);
 
-            // Close button
-            toast.querySelector('.close-toast').addEventListener('click', () => {
-                hideToast(toast);
-            });
-        }
+                // Close button
+                toast.querySelector('.close-toast').addEventListener('click', () => {
+                    hideToast(toast);
+                });
+            }
 
-        // Hide toast
-        function hideToast(toast) {
-            toast.classList.remove('show');
-            setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.parentNode.removeChild(toast);
-                }
-            }, 300);
-        }
+            // Hide toast
+            function hideToast(toast) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }
 
-        // Initialize cart
-        updateCart();
-    </script>
-</body>
-</html>
+            // Initialize cart
+            updateCart();
+        </script>
+        </body>
+
+        </html>

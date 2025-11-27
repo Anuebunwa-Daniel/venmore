@@ -1,0 +1,153 @@
+<%- include('../layout/admin_header') %>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Admin Dashboard</h1>
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <span>name</span>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--secondary);">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>142</h3>
+                    <p>Total Products</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--success);">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>8</h3>
+                    <p>Categories</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--warning);">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>324</h3>
+                    <p>Orders This Month</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--danger);">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>1,248</h3>
+                    <p>Registered Users</p>
+                </div>
+            </div>
+        </div>
+
+        <% if (failureMessages && failureMessages.length> 0) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <%= failureMessages[0] %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+
+                <% if (successMeg && successMeg.length> 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <%= successMeg[0] %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <% } %>
+
+                        <!-- Validation errors -->
+                        <% if (errors && errors.length> 0) { %>
+                            <ul style="color:red;">
+                                <% errors.forEach(function(error) { %>
+                                    <li>
+                                        <%= error.msg %>
+                                    </li>
+                                    <% }); %>
+                            </ul>
+                            <% } %>
+
+
+                                <!-- Product Management Section -->
+                                <div class="content-section">
+                                    <div class="section-header">
+                                        <h2>Category Management</h2>
+                                        <button class="btn btn-primary" id="addProductBtn">
+                                            <i class="fas fa-plus"></i> Add New Category
+                                        </button>
+                                    </div>
+
+                                    <!-- Category Table -->
+                                    <div class="container mt-4">
+                                        <h3 class="mb-3">Category List</h3>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover align-middle">
+                                                <thead class="table">
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Category</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    <% if (category && category.length> 0) { %>
+                                                        <% category.forEach((cat, index)=> { %>
+                                                            <tr>
+                                                                <td>
+                                                                    <%= cat.category_id %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= cat.category_name.replace(/\b\w/g, c=>
+                                                                        c.toUpperCase()) %>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <button class="action-btn edit-btn">
+                                                                        <i class="fas fa-edit"></i> Edit
+                                                                    </button>
+                                                                    <button class="action-btn delete-btn">
+                                                                        <i class="fas fa-trash"></i> Delete
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <% }) %>
+                                                                <% } %>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Add category Form -->
+                                    <div class="content-section" id="addProductForm" style="display: none;">
+                                        <div class="section-header">
+                                            <h2>Add New Category</h2>
+                                            <button class="btn btn-danger" id="closeFormBtn">
+                                                <i class="fas fa-times"></i> Close
+                                            </button>
+                                        </div>
+
+                                        <form id="productForm" action="/admin/add_category" method="post">
+                                            <div class="form-group">
+                                                <label for="productName">Category Name</label>
+                                                <input type="text" id="productName" class="form-control" name="catname"
+                                                    placeholder="Enter product name">
+                                            </div>
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fas fa-save"></i> Save Product
+                                            </button>
+                                        </form>
+
+
+                                        <%- include('../layout/admin_footer') %>

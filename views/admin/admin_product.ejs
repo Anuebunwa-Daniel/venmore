@@ -1,0 +1,189 @@
+<%- include('../layout/admin_header',{header}) %>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Admin Dashboard</h1>
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <span><%= users.firstName %></span>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--secondary);">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>142</h3>
+                    <p>Total Products</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--success);">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>8</h3>
+                    <p>Categories</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--warning);">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>324</h3>
+                    <p>Orders This Month</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--danger);">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>1,248</h3>
+                    <p>Registered Users</p>
+                </div>
+            </div>
+        </div>
+
+        <% if (failureMessages && failureMessages.length> 0) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <%= failureMessages[0] %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+
+                <% if (successMeg && successMeg.length> 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <%= successMeg[0] %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <% } %>
+
+                        <!-- Validation errors -->
+                        <% if (errors && errors.length> 0) { %>
+                            <ul style="color:red;">
+                                <% errors.forEach(function(error) { %>
+                                    <li>
+                                        <%= error.msg %>
+                                    </li>
+                                    <% }); %>
+                            </ul>
+                            <% } %>
+
+
+
+                                <!-- Product Management Section -->
+                                <div class="content-section">
+                                    <div class="section-header">
+                                        <h2>Product Management</h2>
+                                        <button class="btn btn-primary" id="addProductBtn">
+                                            <i class="fas fa-plus"></i> Add New Product
+                                        </button>
+                                    </div>
+
+                                    <!-- Tabs -->
+                                    <div class="tabs">
+                                        <div class="tab active" data-tab="products">Products</div>
+                                    </div>
+
+                                    <!-- Products Tab -->
+                                    <div class="tab-content active" id="products-tab">
+                                        <div class="table-responsive">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Product Name</th>
+                                                        <th>Category</th>
+                                                        <th>Price</th>
+                                                        <th>Description</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% if (product && product.length> 0) { %>
+                                                        <% product.forEach((pro, index)=> { %>
+                                                            <tr>
+                                                                <td><%= pro.product_id %></td>
+                                                                <td><%= pro.productName %></td>
+                                                                <td><%= pro.productCategory.replace(/\b\w/g, c=>
+                                                                        c.toUpperCase()) %></td>
+                                                                <td><%= pro.price %></td>
+                                                                <td><%= pro.desc %></td>
+                                                            
+                                                                <td class="action-buttons">
+                                                                    <a  href="/admin/admin_product/edit/<%= pro._id %>"  class="action-btn edit-btn">
+                                                                        <i class="fas fa-edit"></i> Edit
+                                                                    </a>
+                                                                    <a href="/admin/admin_product/delete/<%= pro._id %>"  class="action-btn delete-btn">
+                                                                        <i class="fas fa-trash"></i> Delete
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                             <% }) %>
+                                                        <% } %>
+                                                           
+                                    <!-- Add Product Form -->
+                                    <div class="content-section" id="addProductForm" style="display: none;">
+                                        <div class="section-header">
+                                            <h2>Add New Product</h2>
+                                            <button class="btn btn-danger" id="closeFormBtn">
+                                                <i class="fas fa-times"></i> Close
+                                            </button>
+                                        </div>
+
+                                        <form id="productForm" enctype="multipart/form-data" action="/admin/add_product"
+                                            method="post">
+                                            <div class="form-group">
+                                                <label for="productName">Product Name</label>
+                                                <input type="text" id="productName" class="form-control"
+                                                    placeholder="Enter product name" name="productName">
+                                            </div>
+                                          
+                                                
+                                            <div class="form-group">
+                                                <label for="productCategory">Category</label>
+                                                <select id="productCategory" class="form-control"
+                                                    name="productCategory">
+                                                    <option value="">Select a category</option>
+                                                        <% if (category && category.length> 0) { %>
+                                                        <% category.forEach((cat, index)=> { %>
+                                                    <option value="<%- cat.category_name %>" ><%= cat.category_name %></option>
+                                                      <% }) %>
+                                                 <% } %>
+                                                 
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="productPrice">Price (&#x20A6;)</label>
+                                                <input type="number" id="productPrice" class="form-control"
+                                                    placeholder="Enter price" step="0.01" name="price">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="productDescription">Description</label>
+                                                <textarea id="productDescription" class="form-control"
+                                                    placeholder="Enter product description" name="desc"></textarea>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="productImage">Product Image</label>
+                                                <input type="file" id="productImage" class="form-control" name="image">
+                                            </div>
+
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fas fa-save"></i> Save Product
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <%- include('../layout/admin_footer') %>

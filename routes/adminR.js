@@ -71,6 +71,9 @@ router.get('/admin_category', async (req, res) => {
 
     // Fetch full user info from DB
     const users = await user.findOne({ email: loggedUser.email });
+    const productCount = await Product.countDocuments();
+    const categoryCount = await Category.countDocuments();
+    const userCount = await user.countDocuments();
 
 
     const category = await Category.find() //fetch all users from the userDB
@@ -81,6 +84,9 @@ router.get('/admin_category', async (req, res) => {
             successMeg,
             header: 'Admin Category',
             category,
+            productCount,
+            userCount,
+            categoryCount,
             users
         }); //pass users to the ejs
 
@@ -168,12 +174,18 @@ router.get('/admin_product', async (req, res) => {
     const users = await user.findOne({ email: loggedUser.email })
     const product = await Product.find() //fetch all product from the productDB
     const category = await Category.find() //fetch all product from the productDB
+    const productCount = await Product.countDocuments();
+    const categoryCount = await Category.countDocuments();
+    const userCount = await user.countDocuments();
     try {
         res.render('admin/admin_product', {
             flashMessages,
             successMeg,
             header: 'Admin Products',
             users,
+             productCount,
+            userCount,
+            categoryCount,
             product: product,
             category
         }); //pass users to the ejs

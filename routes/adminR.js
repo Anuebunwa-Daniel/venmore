@@ -30,17 +30,24 @@ router.get('/admin', async (req, res) => {
     const failureMessages = req.flash('danger');
     const successMeg = req.flash('success');
 
-    // Get logged user from session
+    // Get logged user from session 
     const loggedUser = req.session.user;
     // Fetch full user info from DB
     const users = await user.findOne({ email: loggedUser.email });
     const category = await Category.find() //fetch all users from the userDB
+    const productCount = await Product.countDocuments();
+    const categoryCount = await Category.countDocuments();
+    const userCount = await user.countDocuments();
+    console.log(userCount, categoryCount)
 
     try {
         res.render('admin/admin', {
             failureMessages,
             successMeg,
             header: 'Admin Dashboard',
+            productCount,
+            userCount,
+            categoryCount,
             users  // pass to EJS
         });
 
@@ -384,16 +391,16 @@ router.post('/admin_product/edit/:id', upload.single('image'), [
 })
 
 // post the logout
-router.post('/logout', (req,res)=>{
+router.post('/logout', (req, res) => {
     //save flash sucess message before destroying the session
     req.flash('success', 'you have logged out successfully')
     //destroy the user session 
-    req.session.destroy((err)=>{
-        if(err){
+    req.session.destroy((err) => {
+        if (err) {
             console.error('error destroying the session', err)
             req.flash('danger', 'logout failed, check your network and try again')
             return res.redirect('/admin/admin')
-        }else{
+        } else {
             //clear any residual cookies if any
             res.clearCookie('connect.sid');
             res.redirect('/')

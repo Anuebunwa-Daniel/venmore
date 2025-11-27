@@ -37,7 +37,7 @@ const userRoute = require('./routes/userR.js');
 // const messageRoute = require('./routes/messageR.js');
 
 // --- Connect to MongoDB ---
-mongoose.connect(process.env.Local_database)
+mongoose.connect(process.env.Atlas_database)
   .then(() => console.log('Database connected successfully'))
   .catch(err => console.log(err + ' Database connection failed'));
 

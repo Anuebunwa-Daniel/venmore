@@ -172,7 +172,15 @@ router.post('/login', [
         // ADMIN LOGIN
         if (existingUser.email === 'dan@gmail.com') {
             const users = await user.find();
-            return res.render('admin/admin', { users });
+                const productCount = await Product.countDocuments();
+                const categoryCount = await Category.countDocuments();
+                const userCount = await user.countDocuments();
+            return res.render('admin/admin', { 
+                users,
+                productCount,
+                categoryCount,
+                userCount, 
+            });
         }
 
         // REGULAR USER LOGIN
@@ -201,7 +209,6 @@ router.get("/:category", async (req, res) => {
         }
 
         const products = await Product.find({ productCategory: categoryName });
-        console.log(products)
 
         res.render("category", {
             categoryName,

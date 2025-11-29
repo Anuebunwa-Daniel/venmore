@@ -1,146 +1,148 @@
 <%- include('../layout/admin_header') %>
 
-<div class="main-content">
+    <div class="main-content">
 
-    <div class="header">
-        <h1>Admin Dashboard</h1>
-        <div class="user-info">
-            <div class="user-avatar">AD</div>
-            <span><%= users.firstName %></span>
-        </div>
-    </div>
-
-    <!-- Stats Cards -->
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--secondary);">
-                <i class="fas fa-boxes"></i>
-            </div>
-            <div class="stat-info">
-                <h3>142</h3>
-                <p>Total Products</p>
+        <div class="header">
+            <h1>Admin Dashboard</h1>
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <span>
+                    <%= users.firstName %>
+                </span>
             </div>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--success);">
-                <i class="fas fa-tags"></i>
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--secondary);">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-info">
+                    <h3><%= productCount %></h3>
+                    <p>Total Products</p>
+                </div>
             </div>
-            <div class="stat-info">
-                <h3>8</h3>
-                <p>Categories</p>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--success);">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="stat-info">
+                    <h3><%= categoryCount %></h3>
+                    <p>Categories</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--warning);">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>jsnfvsugugurhg</h3>
+                    <p>Orders This Month</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--danger);">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3><%= userCount %></h3>
+                    <p>Registered Users</p>
+                </div>
             </div>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--warning);">
-                <i class="fas fa-shopping-cart"></i>
+        <!-- Error / Success Alerts -->
+        <% if (failureMessages && failureMessages.length> 0) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= failureMessages[0] %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-            <div class="stat-info">
-                <h3>324</h3>
-                <p>Orders This Month</p>
-            </div>
-        </div>
+            <% } %>
 
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--danger);">
-                <i class="fas fa-users"></i>
-            </div>
-            <div class="stat-info">
-                <h3>1,248</h3>
-                <p>Registered Users</p>
-            </div>
-        </div>
-    </div>
+                <% if (successMeg && successMeg.length> 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= successMeg[0] %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <% } %>
 
-    <!-- Error / Success Alerts -->
-    <% if (failureMessages && failureMessages.length > 0) { %>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <%= failureMessages[0] %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    <% } %>
-
-    <% if (successMeg && successMeg.length > 0) { %>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <%= successMeg[0] %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    <% } %>
-
-    <% if (errors && errors.length > 0) { %>
-        <ul style="color:red;">
-            <% errors.forEach(err => { %>
-                <li><%= err.msg %></li>
-            <% }) %>
-        </ul>
-    <% } %>
+                        <% if (errors && errors.length> 0) { %>
+                            <ul style="color:red;">
+                                <% errors.forEach(err=> { %>
+                                    <li>
+                                        <%= err.msg %>
+                                    </li>
+                                    <% }) %>
+                            </ul>
+                            <% } %>
 
 
-<div class="col-lg-10">
-    <div class="form-container">
-        <div class="form-header">
-            <h1 class="h3 mb-3 ">Edit Product</h1>
-            <p class="text-muted mb-3">Update product information</p>
-        </div>
+                                <div class="col-lg-10">
+                                    <div class="form-container">
+                                        <div class="form-header">
+                                            <h1 class="h3 mb-3 ">Edit Product</h1>
+                                            <p class="text-muted mb-3">Update product information</p>
+                                        </div>
 
-<form method="POST" enctype="multipart/form-data" action="/admin/admin_product/edit/<%= product._id %>">
+                                        <form method="POST" enctype="multipart/form-data"
+                                            action="/admin/admin_product/edit/<%= product._id %>">
 
-    <!-- Product Name -->
-    <div class="mb-3">
-        <label for="productName" class="form-label required">Product Name</label>
-        <input type="text" class="form-control"
-               id="productName"
-               name="productName"
-               value="<%= product.productName %>"
-               required>
-    </div>
+                                            <!-- Product Name -->
+                                            <div class="mb-3">
+                                                <label for="productName" class="form-label required">Product
+                                                    Name</label>
+                                                <input type="text" class="form-control" id="productName"
+                                                    name="productName" value="<%= product.productName %>" required>
+                                            </div>
 
-    <!-- Category -->
-    <div class="col-md-6 mb-3">
-        <label for="productCategory" class="form-label required">Category</label>
-        <select id="productCategory" class="form-control" name="productCategory">
-            <option value="">Select a category</option>
-            <% category.forEach(cat => { %>
-                <option value="<%= cat.category_name %>">
-                    <%= cat.category_name %>
-                </option>
-            <% }) %>
-        </select>
-    </div>
+                                            <!-- Category -->
+                                            <div class="col-md-6 mb-3">
+                                                <label for="productCategory"
+                                                    class="form-label required">Category</label>
+                                                <select id="productCategory" class="form-control"
+                                                    name="productCategory">
+                                                    <option value="">Select a category</option>
+                                                    <% category.forEach(cat=> { %>
+                                                        <option value="<%= cat.category_name %>">
+                                                            <%= cat.category_name %>
+                                                        </option>
+                                                        <% }) %>
+                                                </select>
+                                            </div>
 
-    <!-- Price -->
-    <div class="form-group">
-        <label for="productPrice">Price (&#x20A6;)</label>
-        <input type="number"
-               id="productPrice"
-               class="form-control"
-               step="0.01"
-               name="price"
-               value="<%= product.price %>">
-    </div>
+                                            <!-- Price -->
+                                            <div class="form-group">
+                                                <label for="productPrice">Price (&#x20A6;)</label>
+                                                <input type="number" id="productPrice" class="form-control" step="0.01"
+                                                    name="price" value="<%= product.price %>">
+                                            </div>
 
-    <!-- Description -->
-    <div class="mb-3">
-        <label for="productDescription" class="form-label">Description</label>
-        <textarea class="form-control"
-                  id="productDescription"
-                  name="desc"
-                  rows="4"><%= product.desc %></textarea>
-    </div>
+                                            <!-- Description -->
+                                            <div class="mb-3">
+                                                <label for="productDescription" class="form-label">Description</label>
+                                                <textarea class="form-control" id="productDescription" name="desc"
+                                                    maxlength="35" rows="4"><%= product.desc %>(max 35 characters)</textarea>
+                                                <p id="charCount">0 / 35 characters</p>
+                                            </div>
 
-    <!-- Image -->
-    <div class="form-group">
-        <label for="productImage">Product Image</label>
-        <input type="file" id="productImage" class="form-control" name="image">
-    </div>
+                                            <!-- Image -->
+                                            <div class="form-group">
+                                                <label for="productImage">Product Image</label>
+                                                <input type="file" id="productImage" class="form-control" name="image">
+                                            </div>
 
-    <!-- Buttons -->
-    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-        <a href="/admin/admin_product" class="btn btn-secondary btn-custom">Cancel</a>
-        <button type="submit" class="btn btn-primary btn-custom">Update Product</button>
-    </div>
+                                            <!-- Buttons -->
+                                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                                <a href="/admin/admin_product"
+                                                    class="btn btn-secondary btn-custom">Cancel</a>
+                                                <button type="submit" class="btn btn-primary btn-custom">Update
+                                                    Product</button>
+                                            </div>
 
-</form>
+                                        </form>
 
-<%- include('../layout/admin_footer') %>
+                                        <%- include('../layout/admin_footer') %>

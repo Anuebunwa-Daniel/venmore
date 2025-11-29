@@ -27,13 +27,6 @@ router.get('/', async (req, res) => {
     })
 })
 
-//get the category page
-// router.get('/category', (req, res) => {
-//     res.render('category')
-// })
-// Dynamic category page
-
-
 
 //get the login page 
 router.get('/login', (req, res) => {
@@ -53,6 +46,18 @@ router.get('/register', (req, res) => {
     res.render('register', {
         failureMessages,
         successMeg
+    })
+})
+
+//get the product page 
+router.get('/products', async(req, res) => {
+   const product = await Product.find()
+   const category = await Category.find()
+   const users = await user.find()
+    res.render('products', {
+        product,
+        category,
+        users
     })
 })
 

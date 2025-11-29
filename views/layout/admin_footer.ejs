@@ -15,5 +15,116 @@
         });
 
     </script>
+    <!-- <script>
+    const textarea = document.getElementById("productDescription");
+    const charDisplay = document.getElementById("charCount");
+    const maxChars = 35;
+
+    textarea.addEventListener("input", () => {
+        charDisplay.textContent = `${textarea.value.length} / ${maxChars} characters`;
+           // Prevent pasting more than max characters
+        if (textarea.value.length > max) {
+            textarea.value = textarea.value.slice(0, max);
+        }
+
+        const length = textarea.value.length;
+        counter.textContent = `${length} / ${max} characters`;
+    });
+
+</script> -->
+
+<script>
+  (function() {
+    const textarea = document.getElementById('productDescription');
+    const counter = document.getElementById('charCount');
+    const MAX = 35;
+    const WARN_FROM = MAX - 5; // show orange when within 5 chars
+
+    function updateCounter() {
+      const len = textarea.value.length;
+      counter.textContent = `${len} / ${MAX} characters`;
+      counter.classList.remove('warn', 'limit');
+      textarea.classList.remove('limit');
+
+      if (len >= MAX) {
+        counter.classList.add('limit');
+        textarea.classList.add('limit');
+      } else if (len >= WARN_FROM) {
+        counter.classList.add('warn');
+      }
+    }
+
+    // Prevent typing that would exceed max (covers normal typing & mobile IME)
+    textarea.addEventListener('beforeinput', (e) => {
+      // allow deletions/backspace
+      const inputType = e.inputType;
+      if (inputType && (inputType.startsWith('delete') || inputType === 'historyUndo' || inputType === 'historyRedo')) {
+        return;
+      }
+
+      // get text to be inserted (may be null for some input types)
+      const insert = e.data || '';
+      const selectionStart = textarea.selectionStart;
+      const selectionEnd = textarea.selectionEnd;
+      const currentLength = textarea.value.length;
+      const selectedLength = selectionEnd - selectionStart;
+
+      // new length if this input is allowed
+      const newLength = currentLength - selectedLength + insert.length;
+
+      if (newLength > MAX) {
+        // prevent the input entirely
+        e.preventDefault();
+        // if there is still room, insert a truncated portion (use execCommand as fallback)
+        const allowed = MAX - (currentLength - selectedLength);
+        if (allowed > 0) {
+          const toInsert = insert.slice(0, allowed);
+          // insert at cursor/selection
+          const before = textarea.value.slice(0, selectionStart);
+          const after = textarea.value.slice(selectionEnd);
+          textarea.value = before + toInsert + after;
+          // set cursor after inserted text
+          const cursorPos = selectionStart + toInsert.length;
+          textarea.setSelectionRange(cursorPos, cursorPos);
+          updateCounter();
+        }
+      }
+    });
+
+    // Handle paste explicitly (safer)
+    textarea.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const paste = (e.clipboardData || window.clipboardData).getData('text') || '';
+      const selectionStart = textarea.selectionStart;
+      const selectionEnd = textarea.selectionEnd;
+      const currentLength = textarea.value.length;
+      const selectedLength = selectionEnd - selectionStart;
+      const allowed = MAX - (currentLength - selectedLength);
+      if (allowed <= 0) {
+        // nothing can be pasted
+        return;
+      }
+      const toInsert = paste.slice(0, allowed);
+      const before = textarea.value.slice(0, selectionStart);
+      const after = textarea.value.slice(selectionEnd);
+      textarea.value = before + toInsert + after;
+      const cursorPos = selectionStart + toInsert.length;
+      textarea.setSelectionRange(cursorPos, cursorPos);
+      updateCounter();
+    });
+
+    // Keep counter in sync for other input methods
+    textarea.addEventListener('input', () => {
+      // Safety: trim any accidental overflows
+      if (textarea.value.length > MAX) {
+        textarea.value = textarea.value.slice(0, MAX);
+      }
+      updateCounter();
+    });
+
+    // init
+    updateCounter();
+  })();
+</script>
 </body>
 </html>

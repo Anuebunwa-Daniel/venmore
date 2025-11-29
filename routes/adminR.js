@@ -105,6 +105,9 @@ router.post('/add_category', [
     const failureMessages = req.flash('danger')
     const successMeg = req.flash('success')
     const categories = await Category.find();
+    const productCount = await Product.countDocuments();
+    const categoryCount = await Category.countDocuments();
+    const userCount = await user.countDocuments();
 
     const errors = validationResult(req);
     if ((!errors.isEmpty())) {
@@ -113,6 +116,9 @@ router.post('/add_category', [
             successMeg,
             header: 'Admin Category',
             user,
+            prroductCount,
+            categoryCount,
+            userCount,
             category: categories
         })
     } else {
@@ -126,6 +132,9 @@ router.post('/add_category', [
                     errors: errors.array(),
                     header: 'Admin Category',
                     user,
+                    productCount,
+                    categoryCount,
+                    userCount,
                     category: categories
                 })
             } else {
@@ -183,7 +192,7 @@ router.get('/admin_product', async (req, res) => {
             successMeg,
             header: 'Admin Products',
             users,
-             productCount,
+            productCount,
             userCount,
             categoryCount,
             product: product,
@@ -205,6 +214,9 @@ router.post('/add_product', upload.single('image'), [
 ], async (req, res) => {
     const categories = await Category.find()
     const products = await Product.find()
+    const productCount = await Product.countDocuments();
+    const categoryCount = await Category.countDocuments();
+    const userCount = await user.countDocuments();
 
     const productName = req.body.productName;
     const productCategory = req.body.productCategory;
@@ -222,6 +234,9 @@ router.post('/add_product', upload.single('image'), [
             desc,
             image,
             category: categories,
+            productCount,
+            categoryCount,
+            userCount,
             product: products
         })
     } else {
@@ -235,6 +250,9 @@ router.post('/add_product', upload.single('image'), [
                     errors: errors.array(),
                     header: 'Admin Product',
                     product: products,
+                    productCount,
+                    categoryCount,
+                    userCount,
                     category: categories
                 })
             } else {
@@ -315,6 +333,9 @@ router.get('/admin_product/edit/:id', async (req, res) => {
         const prod = await Product.find() //fetch all product from the productDB
         const product = await Product.findById(productId);
         const category = await Category.find();
+        const productCount = await Product.countDocuments();
+        const categoryCount = await Category.countDocuments();
+        const userCount = await user.countDocuments();
 
         if (!product) {
             req.flash('error', 'Product not found');
@@ -328,6 +349,9 @@ router.get('/admin_product/edit/:id', async (req, res) => {
             category,
             failureMessages,
             successMeg,
+            productCount,
+            categoryCount,
+            userCount,
             users
         })
     } catch (err) {
@@ -350,6 +374,9 @@ router.post('/admin_product/edit/:id', upload.single('image'), [
     const userid = req.params.id
     loggedUser = req.session.user
     const users = await user.findOne({ email: loggedUser.email })
+    const productCount = await Product.countDocuments();
+    const categoryCount = await Category.countDocuments();
+    const userCount = await user.countDocuments();
 
     const errors = validationResult(req)
     if ((!errors.isEmpty())) {
@@ -360,6 +387,9 @@ router.post('/admin_product/edit/:id', upload.single('image'), [
             header: 'Admin Product',
             users,
             product,
+            productCount,
+            categoryCount,
+            userCount,
             category
         })
     } else {
@@ -369,9 +399,12 @@ router.post('/admin_product/edit/:id', upload.single('image'), [
             if (product) {
 
                 req.flash('danger', 'product name exist')
-                res.render('admin/product_edit', {
+                res.render('admin/product_edit/', {
                     failureMessages,
-                    successMeg
+                    successMeg,
+                    productCount,
+                    categoryCount,
+                    userCount
                 })
             }
             if (!product) {

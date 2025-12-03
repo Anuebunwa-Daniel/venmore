@@ -8,11 +8,13 @@ const messages = require('express-messages');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path')
+const https = require('https');
 const { check, validationResult } = require('express-validator');
 
 const user = require('../model/userDB');
 const Category = require('../model/categoryDB');
 const Product = require('../model/productDB');
+const auth = require('../config/auth')
 
 
 // get the home page 
@@ -20,10 +22,16 @@ router.get('/', async (req, res) => {
     const product = await Product.find()
     const category = await Category.find()
     const users = await user.find()
+
+    // CART DATA FROM SESSION
+    const cart = req.session.cart || [];
+    const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     res.render('home', {
         users,
         product,
-        category
+        category,
+        cart,     // 👈 SEND CART
+        total     // 👈 SEND TOTAL PRICE
     })
 })
 
@@ -50,15 +58,35 @@ router.get('/register', (req, res) => {
 })
 
 //get the product page 
-router.get('/products', async(req, res) => {
-   const product = await Product.find()
-   const category = await Category.find()
-   const users = await user.find()
-    res.render('products', {
-        product,
-        category,
-        users
-    })
+router.get('/products', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // current page
+    const limit = 15; // number of products per page
+    const skip = (page - 1) * limit;
+    try {
+        const product = await Product.find()
+        const category = await Category.find()
+        const users = await user.find()
+        const products = await Product.find().skip(skip).limit(limit);
+        const totalProducts = await Product.countDocuments();
+        const totalPages = Math.ceil(totalProducts / limit);
+        // CART DATA FROM SESSION
+        const cart = req.session.cart || [];
+        const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+        res.render('products', {
+            product,
+            category,
+            products,
+            currentPage: page,
+            totalPages,
+            cart,
+            total,
+            users
+        })
+    } catch (err) {
+        console.log(err);
+    }
+
 })
 
 //post registration page 
@@ -173,23 +201,26 @@ router.post('/login', [
 
         // Store user _id also (optional)
         req.session.userid = existingUser._id;
+        const redirectTo = req.session.redirectTo || '/';
+        delete req.session.redirectTo;
+
 
         // ADMIN LOGIN
         if (existingUser.email === 'dan@gmail.com') {
             const users = await user.find();
-                const productCount = await Product.countDocuments();
-                const categoryCount = await Category.countDocuments();
-                const userCount = await user.countDocuments();
-            return res.render('admin/admin', { 
+            const productCount = await Product.countDocuments();
+            const categoryCount = await Category.countDocuments();
+            const userCount = await user.countDocuments();
+            return res.render('admin/admin', {
                 users,
                 productCount,
                 categoryCount,
-                userCount, 
+                userCount,
             });
         }
 
         // REGULAR USER LOGIN
-        res.redirect('/');
+        res.redirect(redirectTo);
 
     } catch (err) {
         console.log(err);
@@ -200,10 +231,155 @@ router.post('/login', [
 });
 
 
+
+router.get("/cart/:id", async (req, res) => {
+    const productId = req.params.id;
+    const referer = req.get("Referer") || "/products"; // fallback if missing
+
+    // Initialize cart in session if not present
+    if (!req.session.cart) {
+        req.session.cart = [];
+    }
+    const cart = req.session.cart;
+
+    // Validate productId
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+        console.log(`Invalid product ID: ${productId}`);
+
+
+        res.redirect(referer);
+        // return res.redirect();
+    }
+
+    try {
+        const product = await Product.findById(productId);
+        if (!product) {
+            console.log(`Product not found: ${productId}`);
+            return res.redirect(referer);
+        }
+
+        // Check if product already exists in cart
+        const existing = cart.find(item => item._id.toString() === productId);
+
+        if (existing) {
+            existing.qty += 1; // increment quantity
+        } else {
+            cart.push({
+                _id: product._id,
+                image: product.image,
+                name: product.productName,
+                price: product.price,
+                qty: 1
+            });
+        }
+
+        req.session.cart = cart; // save updated cart
+
+        res.redirect(referer);; // safely return to previous page
+    } catch (error) {
+        console.error("Error adding to cart:", error);
+        res.redirect(referer); // fallback
+    }
+});
+
+// Increase quantity
+router.get('/cart/increase/:id', async (req, res) => {
+    const productId = req.params.id;
+    let cart = req.session.cart || [];
+
+    cart = cart.map(item => {
+        if (item._id === productId) {
+            item.qty += 1;
+        }
+        return item;
+    });
+
+    req.session.cart = cart;
+    res.json({ success: true, cart }); // return updated cart
+});
+
+// Decrease quantity
+router.get('/cart/decrease/:id', async (req, res) => {
+    const productId = req.params.id;
+    let cart = req.session.cart || [];
+
+    cart = cart.map(item => {
+        if (item._id === productId && item.qty > 1) {
+            item.qty -= 1;
+        }
+        return item;
+    });
+
+    req.session.cart = cart;
+    res.json({ success: true, cart }); // return updated cart
+});
+
+// Remove item
+router.get('/cart/remove/:id', async (req, res) => {
+    const productId = req.params.id;
+    let cart = req.session.cart || [];
+
+    cart = cart.filter(item => item._id !== productId);
+
+    req.session.cart = cart;
+    res.json({ success: true, cart });
+});
+
+
+// GET checkout page
+router.get('/checkout', async (req, res) => {
+    const categoryName = req.params.category;
+    const cart = req.session.cart || [];
+    let total = 0;
+    cart.forEach(item => total += item.price * item.qty);
+    const category = await Category.find()
+    const categories = await Category.findOne({ category_name: categoryName });
+
+    res.render('checkout', {
+        category,
+        categories,
+        cart,
+        total
+    });
+});
+
+// POST checkout
+router.post('/checkout', auth, async (req, res) => {
+
+    try {
+        const cart = req.session.cart || [];
+        if (cart.length === 0) return res.status(400).send('Cart is empty');
+
+        const order = new Order({
+            user: req.session.user._id, // or req.user._id
+            items: cart,
+            total: cart.reduce((a, b) => a + b.price * b.qty, 0),
+            status: 'Pending'
+        });
+        await order.save();
+
+        req.session.cart = [];
+        res.json({ success: true, message: 'Order placed successfully!' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+
+//pay now, using monify 
+
+
+
+
 //dynamic category page 
 router.get("/:category", async (req, res) => {
     const categoryName = req.params.category;
-   
+
+    // Pagination setup
+    const page = parseInt(req.query.page) || 1;
+    const limit = 15; // number of products per page
+    const skip = (page - 1) * limit;
 
     try {
         const category = await Category.find()
@@ -213,12 +389,27 @@ router.get("/:category", async (req, res) => {
             return res.render('/');
         }
 
-        const products = await Product.find({ productCategory: categoryName });
+        // Fetch products only in this category WITH PAGINATION
+        const products = await Product.find({ productCategory: categoryName })
+            .skip(skip)
+            .limit(limit);
+
+        // Count total products for pagination
+        const totalProducts = await Product.countDocuments({ productCategory: categoryName });
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        // CART DATA FROM SESSION
+        const cart = req.session.cart || [];
+        const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
         res.render("category", {
             categoryName,
             products,
-            category
+            category,
+            currentPage: page,
+            totalPages,
+            cart,     // 👈 SEND CART
+            total     // 👈 SEND TOTAL PRICE
         });
     } catch (err) {
         console.log(err);

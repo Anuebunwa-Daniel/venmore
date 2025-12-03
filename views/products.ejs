@@ -1,11 +1,13 @@
 <%- include('layout/user-header.ejs') %>
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Breadcrumb -->
     <div class="container mt-5 pt-5">
         </nav>
     </div>
 
-     <!-- Product Header -->
+    <!-- Product Header -->
     <section class="category-header">
         <div class="container">
             <div class="row">
@@ -20,54 +22,255 @@
     </section>
 
     <div class="container">
-    <!-- Products Grid -->
-    <div class="row g-4">
+        <!-- Products Grid -->
+        <div class="row g-4">
 
-        <% if (product.length > 0) { %>
-            <% product.forEach(product => { %>
+            <% if (products.length> 0) { %>
+                <% products.forEach(product=> { %>
 
-                <div class="col-lg-3 col-md-6"> <!-- 3 per row -->
-                    <div class="product-card">
+                    <div class="col-lg-3 col-md-6"> <!-- 3 per row -->
+                        <div class="product-card">
 
-                        <div class="product-img position-relative">
-                            <span class="product-badge">Bestseller</span>
-                            <img src="<%= product.image %>" alt="<%= product.productName %>" class="img-fluid">
-                        </div>
-
-                        <div class="p-3">
-                            <div class="product-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <span class="text-muted ms-1">(342)</span>
+                            <div class="product-img position-relative">
+                                <span class="product-badge">Bestseller</span>
+                                <img src="<%= product.image %>" alt="<%= product.productName %>" class="img-fluid">
                             </div>
 
-                            <h5 class="product-title"><%= product.productName %></h5>
-                            <p class="text-muted small mb-2"><%= product.desc %></p>
+                            <div class="p-3">
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span class="text-muted ms-1">(342)</span>
+                                </div>
 
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="product-price">(&#x20A6;)<%= product.price %></div>
+                                <h5 class="product-title">
+                                    <%= product.productName %>
+                                </h5>
+                                <p class="text-muted small mb-2">
+                                    <%= product.desc %>
+                                </p>
 
-                                <button class="btn btn-primary btn-sm add-to-cart"
-                                    data-id="<%= product._id %>"
-                                    data-name="<%= product.productName %>"
-                                    data-price="<%= product.price %>"
-                                    data-image="<%= product.image %>">
-                                    Add to Cart
-                                </button>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">(&#x20A6;)<%= product.price %>
+                                    </div>
+
+                                    <button class="btn btn-primary btn-sm add-to-cart" data-id="<%= product._id %>"
+                                        data-name="<%= product.productName %>" data-price="<%= product.price %>"
+                                        data-image="<%= product.image %>">
+                                        Add to Cart
+                                    </button>
+                                </div>
                             </div>
-                        </div>
 
+                        </div>
+                    </div>
+
+                    <% }) %>
+                        <% } else { %>
+
+                            <h3>No products available i yet.</h3>
+
+                            <% } %>
+
+        </div>
+
+        <nav aria-label="Product pagination" class="mt-5">
+            <ul class="pagination justify-content-center">
+
+                <!-- Previous -->
+                <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                    <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+                </li>
+
+                <!-- Numbered Pages -->
+                <% for(let i=1; i <=totalPages; i++){ %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>">
+                            <%= i %>
+                        </a>
+                    </li>
+                    <% } %>
+
+                        <!-- Next -->
+                        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                            <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+                        </li>
+
+            </ul>
+        </nav>
+
+        <!-- Cart Sidebar -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="cartSidebar" aria-labelledby="cartSidebarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="cartSidebarLabel">Your Cart</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column p-0">
+                <div id="cart-items-container">
+                    <% if (cart.length> 0) { %>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Product</th>
+                                        <th>Qty</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cart-items">
+                                    <% cart.forEach(item=> { %>
+                                        <tr id="cart-item-<%= item._id %>">
+                                            <td><img src="<%= item.image %>" width="50" alt="<%= item.name %>"></td>
+                                            <td>
+                                                <%= item.name %>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="#" class="btn btn-sm btn-outline-warning decrease"
+                                                    data-id="<%= item._id %>">-</a>
+                                                <span class="mx-1">
+                                                    <%= item.qty %>
+                                                </span>
+                                                <a href="#" class="btn btn-sm btn-outline-success increase"
+                                                    data-id="<%= item._id %>">+</a>
+                                            </td>
+                                            <td>$<%= item.price %>
+                                            </td>
+                                            <td>$<%= item.price * item.qty %>
+                                            </td>
+                                            <td><a href="#" class="btn btn-sm btn-danger remove"
+                                                    data-id="<%= item._id %>">Remove</a></td>
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-auto p-3 border-top">
+                            <h5>Grand Total: <strong id="cart-total">$<%= total %></strong></h5>
+                            <!-- <a href="/checkout" class="btn btn-primary w-100 mt-2">Checkout</a> -->
+                            <a href="/checkout" class="btn btn-primary w-100 mt-2" data-bs-dismiss="offcanvas">
+                                Checkout
+                            </a>
+                        </div>
+                        <% } else { %>
+                            <div class="text-center p-5">
+                                <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                                <h5>Your cart is empty</h5>
+                                <p class="text-muted">Add some products to your cart</p>
+                            </div>
+                            <% } %>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Overlay -->
+        <div class="overlay" id="overlay"></div>
+
+        <!-- Toast Container -->
+        <div class="toast-container" id="toast-container"></div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 mb-4 mb-lg-0">
+                        <a href="#" class="footer-logo">
+                            <i class="fas fa-mobile-alt me-2"></i>Venmore Pro
+                        </a>
+                        <p class="mb-4">Your trusted source for premium phone accessories and replacement parts. Quality
+                            products, fast delevery, and excellent customer service.</p>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                        <div class="footer-links">
+                            <h5>Shop</h5>
+                            <ul>
+                                <% if (category && category.length> 0) { %>
+                                    <% category.forEach((cat, index)=> { %>
+                                        <li><a href="/<%= cat.category_name %>">
+                                                <%= cat.category_name %>
+                                            </a></li>
+                                        <% }) %>
+                                            <% } %>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                        <div class="footer-links">
+                            <h5>Support</h5>
+                            <ul>
+                                <li><a href="#">Contact Us</a></li>
+                                <li><a href="#">Shipping Policy</a></li>
+                                <li><a href="#">Returns & Refunds</a></li>
+                                <li><a href="#">FAQ</a></li>
+                                <li><a href="#">Size Guide</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4">
+                        <div class="footer-links">
+                            <h5>Company</h5>
+                            <ul>
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Careers</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Terms of Service</a></li>
+                                <li><a href="#">Blog</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="footer-links">
+                            <h5>Contact</h5>
+                            <ul>
+                                <li><a href="mailto:info@techshieldpro.com">info@venmore.com</a></li>
+                                <li><a href="tel:+18005551234">+1 (800) 555-1234</a></li>
+                                <li>123 Tech Street<br>San Francisco, CA 94107</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
+                <hr class="my-5" style="border-color: rgba(255,255,255,0.1);">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0">© 2023 Venmore Pro. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="d-flex justify-content-md-end">
+                            <img src="https://www.freepnglogos.com/uploads/visa-card-logo-9.png" alt="Visa" class="me-2"
+                                height="30">
+                            <img src="https://www.freepnglogos.com/uploads/mastercard-png/mastercard-logo-png-transparent-svg-vector-bie-supply-0.png"
+                                alt="Mastercard" class="me-2" height="30">
+                            <img src="https://www.freepnglogos.com/uploads/logo-paypal-png/logo-paypal-png-paypal-logo-png-vector-download-19.png"
+                                alt="PayPal" class="me-2" height="30">
+                            <img src="https://www.freepnglogos.com/uploads/apple-pay-png/apple-pay-icon-33.png"
+                                alt="Apple Pay" height="30">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
 
-            <% }) %>
-        <% } else { %>
-
-            <h3>No products available i yet.</h3>
-
-        <% } %>
-
-    </div>
+        <%- include('layout/user-footer.ejs') %>

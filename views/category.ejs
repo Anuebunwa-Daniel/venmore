@@ -1,4 +1,6 @@
 <%- include('layout/user-header.ejs') %>
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Breadcrumb -->
     <div class="container mt-5 pt-5">
@@ -20,103 +22,160 @@
     </section>
 
     <!-- Main Content -->
-<div class="container">
-    <!-- Products Grid -->
-    <div class="row g-4">
+    <div class="container">
+        <!-- Products Grid -->
+        <div class="row g-4">
 
-        <% if (products.length > 0) { %>
-            <% products.forEach(product => { %>
+            <% if (products.length> 0) { %>
+                <% products.forEach(product=> { %>
 
-                <div class="col-lg-4 col-md-6"> <!-- 3 per row -->
-                    <div class="product-card">
+                    <div class="col-lg-4 col-md-6"> <!-- 3 per row -->
+                        <div class="product-card">
 
-                        <div class="product-img position-relative">
-                            <span class="product-badge">Bestseller</span>
-                            <img src="<%= product.image %>" alt="<%= product.productName %>" class="img-fluid">
-                        </div>
-
-                        <div class="p-3">
-                            <div class="product-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <span class="text-muted ms-1">(342)</span>
+                            <div class="product-img position-relative">
+                                <span class="product-badge">Bestseller</span>
+                                <img src="<%= product.image %>" alt="<%= product.productName %>" class="img-fluid">
                             </div>
 
-                            <h5 class="product-title"><%= product.productName %></h5>
-                            <p class="text-muted small mb-2"><%= product.desc %></p>
+                            <div class="p-3">
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span class="text-muted ms-1">(342)</span>
+                                </div>
 
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="product-price">(&#x20A6;)<%= product.price %></div>
+                                <h5 class="product-title">
+                                    <%= product.productName %>
+                                </h5>
+                                <p class="text-muted small mb-2">
+                                    <%= product.desc %>
+                                </p>
 
-                                <button class="btn btn-primary btn-sm add-to-cart"
-                                    data-id="<%= product._id %>"
-                                    data-name="<%= product.productName %>"
-                                    data-price="<%= product.price %>"
-                                    data-image="<%= product.image %>">
-                                    Add to Cart
-                                </button>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">(&#x20A6;)<%= product.price %>
+                                    </div>
+
+
+                                    <a href="/cart/<%= product._id %>" class="btn btn-primary mt-2">
+                                        Add to Cart
+                                    </a>
+                                </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
-                </div>
 
-            <% }) %>
-        <% } else { %>
+                    <% }) %>
+                        <% } else { %>
 
-            <h3>No products available in this category yet.</h3>
+                            <h3>No products available in this category yet.</h3>
 
-        <% } %>
+                            <% } %>
 
-    </div>
-    
-                
-                
-            <!-- Pagination -->
-            <nav aria-label="Product pagination" class="mt-5">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                    </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
-                </ul>
-            </nav>
         </div>
+
+
+
+        <!-- Pagination -->
+        <nav aria-label="Category Pagination" class="mt-5">
+            <ul class="pagination justify-content-center">
+
+                <!-- Previous -->
+                <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                    <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+                </li>
+
+                <!-- Page Numbers -->
+                <% for(let i=1; i <=totalPages; i++) { %>
+                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>">
+                            <%= i %>
+                        </a>
+                    </li>
+                    <% } %>
+
+                        <!-- Next -->
+                        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                            <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+                        </li>
+
+            </ul>
+        </nav>
+
 
         <!-- Cart Sidebar -->
-        <div class="cart-sidebar" id="cart-sidebar">
-            <div class="cart-header">
-                <h5 class="cart-title">Your Cart</h5>
-                <button class="close-cart" id="close-cart">
-                    <i class="fas fa-times"></i>
-                </button>
+        <!-- Cart Sidebar -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="cartSidebar" aria-labelledby="cartSidebarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="cartSidebarLabel">Your Cart</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
             </div>
-            <div class="cart-items" id="cart-items">
-                <!-- Cart items will be dynamically added here -->
-                <div class="empty-cart">
-                    <div class="empty-cart-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <h5>Your cart is empty</h5>
-                    <p class="text-muted">Add some products to your cart</p>
+            <div class="offcanvas-body d-flex flex-column p-0">
+                <div id="cart-items-container">
+                    <% if (cart.length> 0) { %>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Product</th>
+                                        <th>Qty</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cart-items">
+                                    <% cart.forEach(item=> { %>
+                                        <tr id="cart-item-<%= item._id %>">
+                                            <td><img src="<%= item.image %>" width="50" alt="<%= item.name %>"></td>
+                                            <td>
+                                                <%= item.name %>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="#" class="btn btn-sm btn-outline-warning decrease"
+                                                    data-id="<%= item._id %>">-</a>
+                                                <span class="mx-1">
+                                                    <%= item.qty %>
+                                                </span>
+                                                <a href="#" class="btn btn-sm btn-outline-success increase"
+                                                    data-id="<%= item._id %>">+</a>
+                                            </td>
+                                            <td>$<%= item.price %>
+                                            </td>
+                                            <td>$<%= item.price * item.qty %>
+                                            </td>
+                                            <td><a href="#" class="btn btn-sm btn-danger remove"
+                                                    data-id="<%= item._id %>">Remove</a></td>
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-auto p-3 border-top">
+                            <h5>Grand Total: <strong id="cart-total">$<%= total %></strong></h5>
+                            <!-- <a href="/checkout" class="btn btn-primary w-100 mt-2">Checkout</a> -->
+                            <a id="checkout-btn" href="/checkout" class="btn btn-primary w-100 mt-2" data-bs-dismiss="offcanvas">
+                                Checkout
+                            </a>
+                        </div>
+                        <% } else { %>
+                            <div class="text-center p-5">
+                                <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                                <h5>Your cart is empty</h5>
+                                <p class="text-muted">Add some products to your cart</p>
+                            </div>
+                            <% } %>
                 </div>
-            </div>
-            <div class="cart-summary" id="cart-summary" style="display: none;">
-                <div class="cart-total">
-                    <span>Total:</span>
-                    <span id="cart-total">$0.00</span>
-                </div>
-                <button class="btn btn-primary checkout-btn">Proceed to Checkout</button>
             </div>
         </div>
+
+
+
 
         <!-- Overlay -->
         <div class="overlay" id="overlay"></div>
@@ -153,11 +212,13 @@
                         <div class="footer-links">
                             <h5>Shop</h5>
                             <ul>
-                            <% if (category && category.length> 0) { %>
-                            <% category.forEach((cat, index)=> { %>
-                                <li><a  href="/<%= cat.category_name %>"><%= cat.category_name %></a></li>
-                            <% }) %>
-                            <% } %>
+                                <% if (category && category.length> 0) { %>
+                                    <% category.forEach((cat, index)=> { %>
+                                        <li><a href="/<%= cat.category_name %>">
+                                                <%= cat.category_name %>
+                                            </a></li>
+                                        <% }) %>
+                                            <% } %>
                             </ul>
                         </div>
                     </div>
@@ -189,7 +250,7 @@
                         <div class="footer-links">
                             <h5>Contact</h5>
                             <ul>
-                                <li><a href="mailto:info@techshieldpro.com">info@techshieldpro.com</a></li>
+                                <li><a href="mailto:info@techshieldpro.com">info@venmore.com</a></li>
                                 <li><a href="tel:+18005551234">+1 (800) 555-1234</a></li>
                                 <li>123 Tech Street<br>San Francisco, CA 94107</li>
                             </ul>
@@ -199,7 +260,7 @@
                 <hr class="my-5" style="border-color: rgba(255,255,255,0.1);">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <p class="mb-0">© 2023 TechShield Pro. All rights reserved.</p>
+                        <p class="mb-0">© 2023 Venmore Pro. All rights reserved.</p>
                     </div>
                     <div class="col-md-6 text-md-end">
                         <div class="d-flex justify-content-md-end">
@@ -216,232 +277,13 @@
                 </div>
             </div>
         </footer>
-        
-
-        <!-- Bootstrap JS Bundle with Popper -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            // Cart functionality
-            let cart = [];
-            const cartIcon = document.getElementById('cart-icon');
-            const cartSidebar = document.getElementById('cart-sidebar');
-            const closeCart = document.getElementById('close-cart');
-            const overlay = document.getElementById('overlay');
-            const cartItems = document.getElementById('cart-items');
-            const cartSummary = document.getElementById('cart-summary');
-            const cartTotal = document.getElementById('cart-total');
-            const cartCount = document.querySelector('.cart-count');
-            const toastContainer = document.getElementById('toast-container');
-
-            // Open cart
-            cartIcon.addEventListener('click', (e) => {
-                e.preventDefault();
-                cartSidebar.classList.add('open');
-                overlay.classList.add('active');
-            });
-
-            // Close cart
-            closeCart.addEventListener('click', () => {
-                cartSidebar.classList.remove('open');
-                overlay.classList.remove('active');
-            });
-
-            // Close cart when clicking overlay
-            overlay.addEventListener('click', () => {
-                cartSidebar.classList.remove('open');
-                overlay.classList.remove('active');
-            });
-
-            // Add to cart functionality
-            document.querySelectorAll('.add-to-cart').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const product = {
-                        id: button.getAttribute('data-id'),
-                        name: button.getAttribute('data-name'),
-                        price: parseFloat(button.getAttribute('data-price')),
-                        image: button.getAttribute('data-image'),
-                        quantity: 1
-                    };
-
-                    addToCart(product);
-                    showToast('Product added to cart', `${product.name} has been added to your cart.`);
-                });
-            });
-
-            // Add product to cart
-            function addToCart(product) {
-                const existingItem = cart.find(item => item.id === product.id);
-
-                if (existingItem) {
-                    existingItem.quantity += 1;
-                } else {
-                    cart.push(product);
-                }
-
-                updateCart();
-            }
-
-            // Remove item from cart
-            function removeFromCart(productId) {
-                cart = cart.filter(item => item.id !== productId);
-                updateCart();
-            }
-
-            // Update quantity
-            function updateQuantity(productId, newQuantity) {
-                if (newQuantity < 1) {
-                    removeFromCart(productId);
-                    return;
-                }
-
-                const item = cart.find(item => item.id === productId);
-                if (item) {
-                    item.quantity = newQuantity;
-                    updateCart();
-                }
-            }
-
-            // Update cart UI
-            function updateCart() {
-                // Update cart count
-                const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-                cartCount.textContent = totalItems;
-
-                // Update cart items
-                if (cart.length === 0) {
-                    cartItems.innerHTML = `
-                    <div class="empty-cart">
-                        <div class="empty-cart-icon">
-                            <i class="fas fa-shopping-cart"></i>
-                        </div>
-                        <h5>Your cart is empty</h5>
-                        <p class="text-muted">Add some products to your cart</p>
-                    </div>
-                `;
-                    cartSummary.style.display = 'none';
-                } else {
-                    cartItems.innerHTML = '';
-                    let total = 0;
-
-                    cart.forEach(item => {
-                        const itemTotal = item.price * item.quantity;
-                        total += itemTotal;
-
-                        const cartItem = document.createElement('div');
-                        cartItem.className = 'cart-item';
-                        cartItem.innerHTML = `
-                        <img src="${item.image}" alt="${item.name}" class="cart-item-img">
-                        <div class="cart-item-details">
-                            <h6 class="cart-item-title">${item.name}</h6>
-                            <div class="cart-item-price">$${item.price.toFixed(2)}</div>
-                            <div class="cart-item-quantity">
-                                <button class="quantity-btn minus" data-id="${item.id}">-</button>
-                                <input type="text" class="quantity-input" value="${item.quantity}" data-id="${item.id}">
-                                <button class="quantity-btn plus" data-id="${item.id}">+</button>
-                                <button class="remove-item" data-id="${item.id}">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-
-                        cartItems.appendChild(cartItem);
-                    });
-
-                    cartTotal.textContent = `$${total.toFixed(2)}`;
-                    cartSummary.style.display = 'block';
-
-                    // Add event listeners to quantity buttons
-                    document.querySelectorAll('.quantity-btn.minus').forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                            const id = e.target.getAttribute('data-id');
-                            const item = cart.find(item => item.id === id);
-                            if (item) {
-                                updateQuantity(id, item.quantity - 1);
-                            }
-                        });
-                    });
-
-                    document.querySelectorAll('.quantity-btn.plus').forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                            const id = e.target.getAttribute('data-id');
-                            const item = cart.find(item => item.id === id);
-                            if (item) {
-                                updateQuantity(id, item.quantity + 1);
-                            }
-                        });
-                    });
-
-                    document.querySelectorAll('.remove-item').forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                            const id = e.target.closest('.remove-item').getAttribute('data-id');
-                            removeFromCart(id);
-                        });
-                    });
-
-                    document.querySelectorAll('.quantity-input').forEach(input => {
-                        input.addEventListener('change', (e) => {
-                            const id = e.target.getAttribute('data-id');
-                            const newQuantity = parseInt(e.target.value);
-                            if (!isNaN(newQuantity) && newQuantity > 0) {
-                                updateQuantity(id, newQuantity);
-                            } else {
-                                updateCart(); // Reset to current quantity
-                            }
-                        });
-                    });
-                }
-            }
-
-            // Show toast notification
-            function showToast(title, message) {
-                const toast = document.createElement('div');
-                toast.className = 'toast toast-success';
-                toast.innerHTML = `
-                <div class="toast-icon">
-                    <i class="fas fa-check"></i>
-                </div>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
-                </div>
-                <button class="close-toast">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-
-                toastContainer.appendChild(toast);
-
-                // Show toast
+            document.getElementById("checkout-btn").addEventListener("click", function () {
                 setTimeout(() => {
-                    toast.classList.add('show');
-                }, 100);
-
-                // Auto remove after 5 seconds
-                setTimeout(() => {
-                    hideToast(toast);
-                }, 5000);
-
-                // Close button
-                toast.querySelector('.close-toast').addEventListener('click', () => {
-                    hideToast(toast);
-                });
-            }
-
-            // Hide toast
-            function hideToast(toast) {
-                toast.classList.remove('show');
-                setTimeout(() => {
-                    if (toast.parentNode) {
-                        toast.parentNode.removeChild(toast);
-                    }
-                }, 300);
-            }
-
-            // Initialize cart
-            updateCart();
+                    window.location.href = "/checkout"; // 🔥 force redirect after closing cart
+                }, 200); // wait for offcanvas animation
+            });
         </script>
-        </body>
 
-        </html>
+        <%- include('layout/user-footer.ejs') %>

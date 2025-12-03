@@ -71,6 +71,18 @@ app.use('/admin', adminRoute);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// Make categories available in all EJS views
+app.use(async (req, res, next) => {
+    try {
+        const categories = await Category.find();
+        res.locals.category = categories; // accessible inside all views
+    } catch(err) {
+        console.log("Category Load Error:", err);
+        res.locals.category = [];
+    }
+    next();
+});
+
 // --- Global variables ---
 app.locals.errors = null;
 

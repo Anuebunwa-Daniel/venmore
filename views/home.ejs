@@ -1,7 +1,7 @@
 <%- include('layout/user-header') %>
- <!-- Bootstrap JS Bundle with Popper -->
+    <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Cart Sidebar -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="cartSidebar" aria-labelledby="cartSidebarLabel">
         <div class="offcanvas-header">
@@ -52,7 +52,10 @@
                     </div>
                     <div class="mt-auto p-3 border-top">
                         <h5>Grand Total: <strong id="cart-total">$<%= total %></strong></h5>
-                        <a href="/checkout" class="btn btn-primary w-100 mt-2">Checkout</a>
+                        <a id="checkout-btn" href="/checkout" class="btn btn-primary w-100 mt-2"
+                                data-bs-dismiss="offcanvas">
+                                Checkout
+                            </a>
                     </div>
                     <% } else { %>
                         <div class="text-center p-5">
@@ -73,18 +76,38 @@
                     <h1 class="hero-title">Premium Phone Accessories & Parts</h1>
                     <p class="hero-subtitle">Protect, enhance, and personalize your device with our premium collection
                         of phone cases, screen protectors, chargers, and replacement parts.</p>
+
                     <div class="d-flex gap-3 flex-wrap">
-                        <a href="#products" class="btn btn-primary btn-lg">Shop Now</a>
-                        <a href="#categories" class="btn btn-outline-primary btn-lg">Browse Categories</a>
+                        <a href="/products" class="btn btn-primary btn-lg">Shop Now</a>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle btn btn-outline-primary btn-lg" href="#" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Browse Categories
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <% if (category && category.length> 0) { %>
+                                    <% category.forEach((cat, index)=> { %>
+                                        <li><a class="dropdown-item" href="/<%= cat.category_name %>">
+                                                <%= cat.category_name %>
+                                            </a></li>
+                                        <% }) %>
+                                            <% } %>
+                            </ul>
+                        </li>
                     </div>
                     <div class="mt-4">
                         <div class="d-flex gap-4">
                             <div>
-                                <h4 class="text-primary mb-1">10K+</h4>
+                                <h4 class="text-primary mb-1">
+                                    <%= userCount %>+
+                                </h4>
                                 <p class="text-muted mb-0">Happy Customers</p>
                             </div>
                             <div>
-                                <h4 class="text-primary mb-1">500+</h4>
+                                <h4 class="text-primary mb-1">
+                                    <%= productCount %>+
+                                </h4>
                                 <p class="text-muted mb-0">Products</p>
                             </div>
                             <div>
@@ -96,8 +119,8 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="hero-image mt-5 mt-lg-0">
-                        <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                            alt="Phone Accessories" class="img-fluid">
+                        <img style="height: 500px;" src="/img/phone_access.jpeg" alt="Phone Accessories"
+                            class="img-fluid">
                     </div>
                 </div>
             </div>
@@ -136,8 +159,7 @@
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="category-card">
-                        <img src="https://images.unsplash.com/photo-1609592810793-abeb6c64b5c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                            alt="Chargers & Cables" class="category-img img-fluid w-100">
+                        <img src="/img/charger.avif" alt="Chargers & Cables" class="category-img img-fluid w-100">
                         <div class="p-3">
                             <h5 class="category-title">Chargers & Cables</h5>
                             <p class="text-muted mb-0">Fast charging solutions for all devices</p>
@@ -146,8 +168,7 @@
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="category-card">
-                        <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                            alt="Replacement Parts" class="category-img img-fluid w-100">
+                        <img src="/img/replacement.webp" alt="Replacement Parts" class="category-img img-fluid w-100">
                         <div class="p-3">
                             <h5 class="category-title">Replacement Parts</h5>
                             <p class="text-muted mb-0">Genuine parts for repairs and upgrades</p>
@@ -158,127 +179,74 @@
         </div>
     </section>
 
-    <!-- Featured Products -->
+
+    <!-- popular product -->
     <section id="products" class="section-padding">
         <div class="container">
             <div class="row mb-5">
                 <div class="col-lg-8 mx-auto text-center">
-                    <h2 class="mb-3">Featured Products</h2>
+                    <h2 class="mb-3">Popular Products</h2>
                     <p class="text-muted">Our most popular phone accessories</p>
                 </div>
             </div>
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-3">
+
+            <!-- Owl Carousel Container -->
+            <div class="owl-carousel owl-theme popular-products-carousel">
+                <% popularProducts.forEach((product, index)=> { %>
                     <div class="product-card">
                         <div class="product-img position-relative">
-                            <span class="product-badge">Bestseller</span>
-                            <img src="https://images.unsplash.com/photo-1605236453806-6ff36851218e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                                alt="Tempered Glass Screen Protector" class="img-fluid">
+                            <!-- Add badge based on index or product properties -->
+
+                            <span class="product-badge">
+                                <%= product.badge || "Regular" %>
+                            </span>
+
+                            <img src="<%= product.image  %>" alt="<%= product.productName %>" class="img-fluid">
                         </div>
                         <div class="p-3">
                             <div class="product-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                                <span class="text-muted ms-1">(128)</span>
+                                <% for (let i=1; i <=5; i++) { %>
+                                    <% if (i <=product.rating) { %>
+                                        <i class="fas fa-star"></i> <!-- full star -->
+                                        <% } else { %>
+                                            <i class="far fa-star"></i> <!-- empty star -->
+                                            <% } %>
+                                                <% } %>
+
+                                                    <span class="text-muted ms-1">(<%= product.rating %>)</span>
                             </div>
-                            <h5 class="product-title">Tempered Glass Screen Protector</h5>
-                            <p class="text-muted small mb-2">9H hardness, ultra-clear, bubble-free installation</p>
+                            <h5 class="product-title">
+                                <%= product.productName %>
+                            </h5>
+                            <p class="text-muted small mb-2">
+                                <%= product.desc %>
+                            </p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="product-price">$12.99</div>
-                                <button class="btn btn-primary btn-sm">Add to Cart</button>
+                                <div class="product-price">$<%= product.price %>
+                                </div>
+                                <a href="/cart/<%= product._id %>" class="btn btn-primary mt-2">
+                                    Add to Cart
+                                </a>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="product-card">
-                        <div class="product-img position-relative">
-                            <span class="product-badge">New</span>
-                            <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                                alt="Wireless Charging Pad" class="img-fluid">
-                        </div>
-                        <div class="p-3">
-                            <div class="product-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <span class="text-muted ms-1">(64)</span>
-                            </div>
-                            <h5 class="product-title">Fast Wireless Charging Pad</h5>
-                            <p class="text-muted small mb-2">15W fast charging, compatible with all Qi devices</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="product-price">$24.99 <span class="product-old-price">$29.99</span></div>
-                                <button class="btn btn-primary btn-sm">Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="product-card">
-                        <div class="product-img">
-                            <img src="https://images.unsplash.com/photo-1601593346926-2af4e1f6e5de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                                alt="Protective Phone Case" class="img-fluid">
-                        </div>
-                        <div class="p-3">
-                            <div class="product-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <span class="text-muted ms-1">(342)</span>
-                            </div>
-                            <h5 class="product-title">Rugged Protective Phone Case</h5>
-                            <p class="text-muted small mb-2">Military-grade protection, raised bezels</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="product-price">$18.99</div>
-                                <button class="btn btn-primary btn-sm">Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="product-card">
-                        <div class="product-img">
-                            <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-                                alt="Replacement Battery" class="img-fluid">
-                        </div>
-                        <div class="p-3">
-                            <div class="product-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                                <span class="text-muted ms-1">(89)</span>
-                            </div>
-                            <h5 class="product-title">Genuine Replacement Battery</h5>
-                            <p class="text-muted small mb-2">High capacity, OEM quality, easy installation</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="product-price">$34.99</div>
-                                <button class="btn btn-primary btn-sm">Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    <% }); %>
             </div>
+
             <div class="text-center mt-5">
-                <a href="#" class="btn btn-outline-primary">View All Products</a>
+                <a href="/products" class="btn btn-outline-primary">View All Products</a>
             </div>
         </div>
     </section>
+
+
 
     <!-- Features Section -->
     <section id="features" class="section-padding bg-light">
         <div class="container">
             <div class="row mb-5">
                 <div class="col-lg-8 mx-auto text-center">
-                    <h2 class="mb-3">Why Choose TechShield Pro</h2>
+                    <h2 class="mb-3">Why Choose Venmore Pro</h2>
                     <p class="text-muted">We provide the best quality and service for our customers</p>
                 </div>
             </div>
@@ -298,8 +266,9 @@
                         <div class="feature-icon">
                             <i class="fas fa-shipping-fast"></i>
                         </div>
-                        <h5>Fast Shipping</h5>
-                        <p class="text-muted">Free shipping on orders over $50. Most orders ship within 24 hours.</p>
+                        <h5>Fast Delivery</h5>
+                        <p class="text-muted">Fast delivery on all orders over &#x20A6;50. Most orders delivery within
+                            Delta state in 24 hours and 48 hours outside Delta.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -317,7 +286,8 @@
                             <i class="fas fa-undo-alt"></i>
                         </div>
                         <h5>Easy Returns</h5>
-                        <p class="text-muted">Not satisfied? Return any product within 30 days for a full refund.</p>
+                        <p class="text-muted">Not satisfied? Return any product within 30 days for a full refund. (terms
+                            and condition apply)</p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -432,7 +402,7 @@
             <div class="row">
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <a href="#" class="footer-logo">
-                        <i class="fas fa-mobile-alt me-2"></i>TechShield Pro
+                        <i class="fas fa-mobile-alt me-2"></i>Venmore Pro
                     </a>
                     <p class="mb-4">Your trusted source for premium phone accessories and replacement parts. Quality
                         products, fast shipping, and excellent customer service.</p>
@@ -493,7 +463,7 @@
                     <div class="footer-links">
                         <h5>Contact</h5>
                         <ul>
-                            <li><a href="mailto:info@techshieldpro.com">info@techshieldpro.com</a></li>
+                            <li><a href="mailto:info@techshieldpro.com">info@venmore.com</a></li>
                             <li><a href="tel:+18005551234">+1 (800) 555-1234</a></li>
                             <li>123 Tech Street<br>San Francisco, CA 94107</li>
                         </ul>
@@ -503,7 +473,7 @@
             <hr class="my-5" style="border-color: rgba(255,255,255,0.1);">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <p class="mb-0">© 2023 TechShield Pro. All rights reserved.</p>
+                    <p class="mb-0">© 2023 venmore Pro. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <div class="d-flex justify-content-md-end">
@@ -520,5 +490,37 @@
             </div>
         </div>
     </footer>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Owl Carousel JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+    <!-- Add Owl Carousel JS (include in your main layout or here) -->
+    <script>
+        $(document).ready(function () {
+            $(".popular-products-carousel").owlCarousel({
+                loop: true,
+                margin: 20,
+                nav: true,
+                dots: true,
+                autoplay: true,
+                autoplayTimeout: 3000,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    576: {
+                        items: 2
+                    },
+                    992: {
+                        items: 4
+                    }
+                }
+            });
+        });
+    </script>
+
+
 
     <%- include('layout/user-footer') %>

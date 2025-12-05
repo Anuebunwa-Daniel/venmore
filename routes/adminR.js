@@ -38,7 +38,7 @@ router.get('/admin', async (req, res) => {
     const productCount = await Product.countDocuments();
     const categoryCount = await Category.countDocuments();
     const userCount = await user.countDocuments();
-    console.log(userCount, categoryCount)
+   
 
     try {
         res.render('admin/admin', {
@@ -209,6 +209,9 @@ router.get('/admin_product', async (req, res) => {
 router.post('/add_product', upload.single('image'), [
     check('productName', 'product  must have a name!').notEmpty(),
     check('productCategory', 'product  must belog to a category').notEmpty(),
+    check('popular', 'select if the product is pupolar or not').notEmpty(),
+    check('badge', 'select badge').notEmpty(),
+    check('rating', 'Rate your product').notEmpty(),
     check('price', 'price  must have a value!').notEmpty(),
     check('desc', 'product  must have a Description!').notEmpty(),
 ], async (req, res) => {
@@ -219,6 +222,9 @@ router.post('/add_product', upload.single('image'), [
     const userCount = await user.countDocuments();
 
     const productName = req.body.productName;
+    const popular = req.body.popular;
+    const badge = req.body.badge;
+    const rating = req.body.rating;
     const productCategory = req.body.productCategory;
     const price = req.body.price;
     const desc = req.body.desc
@@ -232,6 +238,9 @@ router.post('/add_product', upload.single('image'), [
             productCategory,
             price,
             desc,
+            popular,
+            badge,
+            rating,
             image,
             category: categories,
             productCount,
@@ -278,6 +287,9 @@ router.post('/add_product', upload.single('image'), [
                     productName,
                     productCategory,
                     price,
+                    popular,
+                    badge,
+                    rating,
                     desc,
                     image: result.url,
                     public_id: result.public_id
@@ -364,10 +376,16 @@ router.post('/admin_product/edit/:id', upload.single('image'), [
     check('productName', 'Product  must have a Name!').notEmpty(),
     check('desc', 'Description must have a value!').notEmpty(),
     check('price', 'price must have a value!').notEmpty(),
+    check('popular', 'select if its a popular product').notEmpty(),
+    check('badge', 'select the badge').notEmpty(),
+    check('rating', 'you forgot to rate your product').notEmpty(),
     check('productCategory', 'price must have a value!').notEmpty(),
 ], async (req, res) => {
     const productName = req.body.productName;
     const desc = req.body.desc;
+    const popular = req.body.popular ;
+    const badge = req.body.badge ;
+    const rating = req.body.rating ;
     const price = req.body.price;
     const productCategory = req.body.productCategory;
 
@@ -387,6 +405,9 @@ router.post('/admin_product/edit/:id', upload.single('image'), [
             header: 'Admin Product',
             users,
             product,
+            popular,
+            badge,
+            rating,
             productCount,
             categoryCount,
             userCount,
@@ -421,6 +442,9 @@ router.post('/admin_product/edit/:id', upload.single('image'), [
                 productName,
                 desc,
                 price,
+                popular,
+                badge,
+                rating,
                 productCategory,
                 image: result.url,
                 public_id: result.public_id

@@ -107,6 +107,16 @@
         });
     </script>
 
+      <script>
+            document.getElementById("checkout-btn").addEventListener("click", function () {
+                setTimeout(() => {
+                    window.location.href = "/checkout"; // 🔥 force redirect after closing cart
+                }, 200); // wait for offcanvas animation
+            });
+        </script>
+     
+
+
 </body>
 
 </html>

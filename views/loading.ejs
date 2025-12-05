@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting to Payment</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+        img {
+            width: 100px;
+            height: 100px;
+        }
+        p {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <img src="/img/loading2.gif" alt="Loading...">
+    <p>Redirecting you to secure payment...</p>
+
+    <script>
+        // Redirect after 2 seconds (adjust as needed)
+        setTimeout(() => {
+            window.location.href = "<%= redirectUrl %>";
+        }, 3000);
+    </script>
+</body>
+</html>

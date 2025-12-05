@@ -32,18 +32,23 @@
                         <div class="product-card">
 
                             <div class="product-img position-relative">
-                                <span class="product-badge">Bestseller</span>
+                                <span class="product-badge">
+                                    <%= product.badge || "Regular" %>
+                                </span>
                                 <img src="<%= product.image %>" alt="<%= product.productName %>" class="img-fluid">
                             </div>
 
                             <div class="p-3">
                                 <div class="product-rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <span class="text-muted ms-1">(342)</span>
+                                    <% for (let i=1; i <=5; i++) { %>
+                                        <% if (i <=product.rating) { %>
+                                            <i class="fas fa-star"></i> <!-- full star -->
+                                            <% } else { %>
+                                                <i class="far fa-star"></i> <!-- empty star -->
+                                                <% } %>
+                                                    <% } %>
+
+                                                        <span class="text-muted ms-1">(<%= product.rating %>)</span>
                                 </div>
 
                                 <h5 class="product-title">
@@ -57,11 +62,9 @@
                                     <div class="product-price">(&#x20A6;)<%= product.price %>
                                     </div>
 
-                                    <button class="btn btn-primary btn-sm add-to-cart" data-id="<%= product._id %>"
-                                        data-name="<%= product.productName %>" data-price="<%= product.price %>"
-                                        data-image="<%= product.image %>">
+                                    <a href="/cart/<%= product._id %>" class="btn btn-primary mt-2">
                                         Add to Cart
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
 
@@ -154,7 +157,8 @@
                         <div class="mt-auto p-3 border-top">
                             <h5>Grand Total: <strong id="cart-total">$<%= total %></strong></h5>
                             <!-- <a href="/checkout" class="btn btn-primary w-100 mt-2">Checkout</a> -->
-                            <a href="/checkout" class="btn btn-primary w-100 mt-2" data-bs-dismiss="offcanvas">
+                            <a id="checkout-btn" href="/checkout" class="btn btn-primary w-100 mt-2"
+                                data-bs-dismiss="offcanvas">
                                 Checkout
                             </a>
                         </div>

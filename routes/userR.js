@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path')
 const https = require('https');
+const Flutterwave = require("flutterwave-node-v3");
 const { check, validationResult } = require('express-validator');
 
 const user = require('../model/userDB');
@@ -16,22 +17,44 @@ const Category = require('../model/categoryDB');
 const Product = require('../model/productDB');
 const auth = require('../config/auth')
 
+const flw = new Flutterwave(
+    process.env.FLW_PUBLIC_KEY,
+    process.env.FLW_SECRET_KEY
+);
+
 
 // get the home page 
 router.get('/', async (req, res) => {
+    const failureMessages = req.flash('danger')
+    const successMeg = req.flash('success')
     const product = await Product.find()
     const category = await Category.find()
     const users = await user.find()
+    const productCount = await Product.countDocuments();
+    const userCount = await user.countDocuments();
+    const popularProducts = await Product.find({ popular: "yes" }); 
 
     // CART DATA FROM SESSION
     const cart = req.session.cart || [];
     const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     res.render('home', {
         users,
+        failureMessages,
+        successMeg,
         product,
+        popularProducts,
         category,
+        userCount,
+        productCount,
         cart,     // 👈 SEND CART
         total     // 👈 SEND TOTAL PRICE
+    })
+})
+
+router.get('/car', async(req,res)=>{
+    const popularProducts = await Product.find({ popular: "yes" }); 
+    res.render('car', {
+        popularProducts
     })
 })
 
@@ -59,6 +82,8 @@ router.get('/register', (req, res) => {
 
 //get the product page 
 router.get('/products', async (req, res) => {
+    const failureMessages = req.flash('danger')
+    const successMeg = req.flash('success')
     const page = parseInt(req.query.page) || 1; // current page
     const limit = 15; // number of products per page
     const skip = (page - 1) * limit;
@@ -81,7 +106,9 @@ router.get('/products', async (req, res) => {
             totalPages,
             cart,
             total,
-            users
+            users,
+            failureMessages,
+            successMeg
         })
     } catch (err) {
         console.log(err);
@@ -328,6 +355,8 @@ router.get('/cart/remove/:id', async (req, res) => {
 
 // GET checkout page
 router.get('/checkout', async (req, res) => {
+    const failureMessages = req.flash('danger')
+    const successMeg = req.flash('success')
     const categoryName = req.params.category;
     const cart = req.session.cart || [];
     let total = 0;
@@ -339,7 +368,9 @@ router.get('/checkout', async (req, res) => {
         category,
         categories,
         cart,
-        total
+        total,
+        failureMessages,
+        successMeg
     });
 });
 
@@ -366,14 +397,140 @@ router.post('/checkout', auth, async (req, res) => {
     }
 });
 
+//posting the pay using flutterwave 
+router.post("/pay", auth, async (req, res) => {
+    try {
+        const user = req.session.user;
+        const cart = req.session.cart;
 
-//pay now, using monify 
+        if (!user) {
+            req.session.redirectTo = "/checkout";
+            return res.redirect("/login");
+        }
+
+        if (!cart || cart.length === 0) {
+            req.flash("danger", "Your cart is empty");
+            return res.redirect("/cart");
+        }
+
+        // Calculate total
+        const totalAmount = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+        // Build Flutterwave payload
+        const payload = {
+            tx_ref: "VENMORE-" + Date.now(),
+            amount: totalAmount,
+            currency: "NGN",
+            redirect_url: "http://localhost:2000/payment/verify",
+            customer: {
+                email: user.email,
+                name: `${user.firstName} ${user.lastName}`
+            },
+            meta: {
+                userId: user._id
+            },
+            customizations: {
+                title: "Venmore Payment",
+                description: "Payment for shopping items"
+            }
+        };
+        // Convert to JSON
+        const dataString = JSON.stringify(payload);
+
+        // HTTPS request options
+        const options = {
+            hostname: "api.flutterwave.com",
+            path: "/v3/payments",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Content-Length": Buffer.byteLength(dataString),
+                "Authorization": "Bearer " + process.env.FLW_SECRET_KEY
+            }
+        };
+
+        const paymentRequest = https.request(options, (response) => {
+            let data = "";
+
+            response.on("data", chunk => {
+                data += chunk;
+            });
+
+            response.on("end", () => {
+                const json = JSON.parse(data);
+                console.log("Flutterwave Response:", json);
+
+                if (json.status === "success") {
+                    // Pass the Flutterwave hosted link to the loading page
+                    return res.render("loading", { redirectUrl: json.data.link });
+                }else{
+                     req.flash("danger", "Payment initialization failed.");
+                return res.redirect("/checkout");
+                } 
+            });
+        });
+
+        paymentRequest.on("error", (err) => {
+            console.error("Flutterwave HTTPS Error:", err);
+            req.flash("danger", "Unable to reach Flutterwave. Try again later.");
+            return res.redirect("/checkout");
+        });
+
+        paymentRequest.write(dataString);
+        paymentRequest.end();
+
+    } catch (err) {
+        console.error("Payment Route Error:", err);
+        req.flash("danger", "Something went wrong.");
+        return res.redirect("/checkout");
+    }
+});
+
+
+router.get("/payment/verify", async (req, res) => {
+    try {
+        const transaction_id = req.query.transaction_id;
+
+        if (!transaction_id) {
+            req.flash("danger", "Invalid payment verification.");
+            return res.redirect("/checkout");
+        }
+
+        const flw = new Flutterwave(
+            process.env.FLW_PUBLIC_KEY,
+            process.env.FLW_SECRET_KEY
+        );
+
+        const result = await flw.Transaction.verify({ id: transaction_id });
+
+        if (result.status === "success" && result.data.status === "successful") {
+            // Clear cart
+            req.session.cart = [];
+
+            req.flash("success", "Payment successful! Thank you for your purchase.");
+            return res.redirect("/");
+        }
+
+        // If payment not successful
+        req.flash("danger", "Payment failed or was cancelled.");
+        return res.redirect("/checkout");
+
+    } catch (err) {
+        console.log("Verification Error:", err);
+        req.flash("danger", "Payment verification error. Try again.");
+        return res.redirect("/checkout");
+    }
+});
+
+
 
 
 
 
 //dynamic category page 
 router.get("/:category", async (req, res) => {
+    const failureMessages = req.flash('danger')
+    const successMeg = req.flash('success')
     const categoryName = req.params.category;
 
     // Pagination setup
@@ -407,6 +564,8 @@ router.get("/:category", async (req, res) => {
             products,
             category,
             currentPage: page,
+            failureMessages,
+            successMeg,
             totalPages,
             cart,     // 👈 SEND CART
             total     // 👈 SEND TOTAL PRICE

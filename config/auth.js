@@ -1,6 +1,5 @@
 function auth(req, res, next) {
   if (req.session && req.session.userid) {
-    // If using passport.js
     return next();
   }
 

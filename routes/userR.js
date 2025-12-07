@@ -15,6 +15,7 @@ const { check, validationResult } = require('express-validator');
 const user = require('../model/userDB');
 const Category = require('../model/categoryDB');
 const Product = require('../model/productDB');
+const order = require("../model/order");
 const auth = require('../config/auth')
 
 const flw = new Flutterwave(
@@ -32,7 +33,7 @@ router.get('/', async (req, res) => {
     const users = await user.find()
     const productCount = await Product.countDocuments();
     const userCount = await user.countDocuments();
-    const popularProducts = await Product.find({ popular: "yes" }); 
+    const popularProducts = await Product.find({ popular: "yes" });
 
     // CART DATA FROM SESSION
     const cart = req.session.cart || [];
@@ -51,12 +52,12 @@ router.get('/', async (req, res) => {
     })
 })
 
-router.get('/car', async(req,res)=>{
-    const popularProducts = await Product.find({ popular: "yes" }); 
-    res.render('car', {
-        popularProducts
-    })
-})
+// router.get('/car', async (req, res) => {
+//     const popularProducts = await Product.find({ popular: "yes" });
+//     res.render('car', {
+//         popularProducts
+//     })
+// })
 
 
 //get the login page 
@@ -413,15 +414,27 @@ router.post("/pay", auth, async (req, res) => {
             return res.redirect("/cart");
         }
 
+
         // Calculate total
         const totalAmount = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        // Generate transaction reference
+        const txRef = "VENMORE-" + Date.now();
+        // 1️⃣ SAVE ORDER TO DATABASE BEFORE PAYMENT
+        await order.create({
+            txRef,
+            userId: user._id,
+            email: user.email,
+            amount: totalAmount,
+            cartItem: cart,
+            status: "pending"
+        });
 
         // Build Flutterwave payload
         const payload = {
-            tx_ref: "VENMORE-" + Date.now(),
+            tx_ref: txRef,
             amount: totalAmount,
             currency: "NGN",
-            redirect_url: "http://localhost:2000/payment/verify",
+            redirect_url: "https://venmore.onrender.com/payment/verify",
             customer: {
                 email: user.email,
                 name: `${user.firstName} ${user.lastName}`
@@ -463,10 +476,10 @@ router.post("/pay", auth, async (req, res) => {
                 if (json.status === "success") {
                     // Pass the Flutterwave hosted link to the loading page
                     return res.render("loading", { redirectUrl: json.data.link });
-                }else{
-                     req.flash("danger", "Payment initialization failed.");
-                return res.redirect("/checkout");
-                } 
+                } else {
+                    req.flash("danger", "Payment initialization failed.");
+                    return res.redirect("/checkout");
+                }
             });
         });
 
@@ -543,7 +556,7 @@ router.get("/:category", async (req, res) => {
         const categories = await Category.findOne({ category_name: categoryName });
 
         if (!categories) {
-            return res.render('/');
+             return res.redirect("/");
         }
 
         // Fetch products only in this category WITH PAGINATION

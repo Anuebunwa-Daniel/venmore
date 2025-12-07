@@ -34,6 +34,7 @@ const user = require('./model/userDB.js')
 
 const adminRoute = require('./routes/adminR.js');
 const userRoute = require('./routes/userR.js');
+const webhookRoute = require('./routes/webhookR.js');
 // const messageRoute = require('./routes/messageR.js');
 
 // --- Connect to MongoDB ---
@@ -65,7 +66,11 @@ app.set('view engine', 'ejs');
 // --- Use routes ---
 app.use('/', userRoute);
 app.use('/admin', adminRoute);
+app.use('/webhook', webhookRoute);
 // app.use('/message', messageRoute);
+
+app.use("/flutterwave/webhook", express.raw({ type: "*/*" }));
+
 
 // --- Body Parser (optional, you already have express.json) ---
 app.use(bodyParser.urlencoded({ extended: false }));
